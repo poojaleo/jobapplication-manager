@@ -16,8 +16,6 @@ users functionality to keep track of all job applications and interview question
 The service will return a list of job applications with a given status and customized user notes. 
 
 
-
-
 ## 2. Top Questions to Resolve in Review
 
 1. Should interview prep be a separate table? Could keep track of different questions and user answers.
