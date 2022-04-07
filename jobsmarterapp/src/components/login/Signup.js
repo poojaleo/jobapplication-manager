@@ -10,7 +10,7 @@ let email = "";
 let firstname = "";
 let lastname = "";
 let password = "";
-// const baseUrl = "https://7ehv0ovn6e.execute-api.us-west-2.amazonaws.com/prod";
+const baseUrl = "https://7ehv0ovn6e.execute-api.us-west-2.amazonaws.com/prod";
 
 function SignUpClick() {
     let navigate = useNavigate();
@@ -37,7 +37,7 @@ function SignUpClick() {
             "password": pass
         }
 
-        const userResponse = await fetch(`/users/`, {
+        const userResponse = await fetch(`${baseUrl}/users/`, {
             method: 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -81,7 +81,7 @@ function UpdateUserClick() {
         }
 
         //users/{username}
-        const updateResponse = await fetch(`/users/${name}`, {
+        const updateResponse = await fetch(`${baseUrl}/users/${name}`, {
             method: 'PUT',
             headers : {
                 'Accept' : 'application/json',

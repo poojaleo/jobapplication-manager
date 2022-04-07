@@ -11,7 +11,7 @@ import {Multiselect} from "multiselect-react-dropdown";
 import JobApplicationNavbar from "../NavBar/JobApplicationNavbar";
 
 let usernameToPass = "";
-// const baseUrl = "https://7ehv0ovn6e.execute-api.us-west-2.amazonaws.com/prod";
+const baseUrl = "https://7ehv0ovn6e.execute-api.us-west-2.amazonaws.com/prod";
 
 function QuestionClick(name) {
 
@@ -69,10 +69,10 @@ class AllJobApplications extends React.Component {
 
     async componentDidMount() {
         console.log("Getting applications")
-        const applicationsResponse = await fetch(`/users/${this.state.username}/jobapplications`);
+        const applicationsResponse = await fetch(`${baseUrl}/users/${this.state.username}/jobapplications`);
         const applicationsBody = await applicationsResponse.json();
 
-        const questionsResponse = await fetch(`/users/${this.state.username}/questions`);
+        const questionsResponse = await fetch(`${baseUrl}/users/${this.state.username}/questions`);
         const questionsBody = await questionsResponse.json();
         this.setState({allJobApplications : applicationsBody.jobApplicationList, allQuestions: questionsBody.questions});
     }
@@ -118,7 +118,7 @@ class AllJobApplications extends React.Component {
 
     async viewApplication(id) {
 
-        const applicationResponse = await fetch(`/users/${this.state.username}/jobapplications/${id}`);
+        const applicationResponse = await fetch(`${baseUrl}/users/${this.state.username}/jobapplications/${id}`);
         const applicationBody = await applicationResponse.json();
         this.setState({specificJobApplication : applicationBody.jobApplicationModel, applicationLoaded: true, isCreate: false})
         let itemChange = {...this.state.specificJobApplication};
@@ -153,7 +153,7 @@ class AllJobApplications extends React.Component {
             "notes": this.state.specificJobApplication.notes
         }
 
-        const response = await fetch(`/users/${this.state.username}/jobapplications/`, {
+        const response = await fetch(`${baseUrl}/users/${this.state.username}/jobapplications/`, {
             method: 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -184,7 +184,7 @@ class AllJobApplications extends React.Component {
             "questionsList": this.state.specificJobApplication.questionsList
         }
 
-        const response = await fetch(`/users/${this.state.username}/jobapplications/${this.state.specificJobApplication.applicationId}`, {
+        const response = await fetch(`${baseUrl}/users/${this.state.username}/jobapplications/${this.state.specificJobApplication.applicationId}`, {
             method: 'PUT',
             headers : {
                 'Accept' : 'application/json',
@@ -206,7 +206,7 @@ class AllJobApplications extends React.Component {
         console.log("Deleting Application....")
 
 
-        const response = await fetch(`/users/${this.state.username}/jobapplications/${this.state.specificJobApplication.applicationId}`, {
+        const response = await fetch(`${baseUrl}/users/${this.state.username}/jobapplications/${this.state.specificJobApplication.applicationId}`, {
             method: 'DELETE'
         });
 

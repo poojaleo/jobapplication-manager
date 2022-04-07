@@ -6,7 +6,7 @@ import {Multiselect} from "multiselect-react-dropdown";
 import JobApplicationNavbar from "../NavBar/JobApplicationNavbar";
 
 let usernameToPass = "";
-// const baseUrl = "https://7ehv0ovn6e.execute-api.us-west-2.amazonaws.com/prod";
+const baseUrl = "https://7ehv0ovn6e.execute-api.us-west-2.amazonaws.com/prod";
 
 function JobApplicationClick(name) {
 
@@ -50,21 +50,21 @@ class AllQuestions extends React.Component {
 
     async componentDidMount() {
         console.log("Getting questions")
-        const questionsResponse = await fetch(`/users/${this.state.username}/questions`);
+        const questionsResponse = await fetch(`${baseUrl}/users/${this.state.username}/questions`);
         const questionsBody = await questionsResponse.json();
         this.setState({allQuestions : questionsBody.questions})
     }
 
     async viewAllQuestions(event) {
         console.log("Getting all questions...")
-        const questionsResponse = await fetch(`/users/${this.state.username}/questions`);
+        const questionsResponse = await fetch(`${baseUrl}/users/${this.state.username}/questions`);
         const questionsBody = await questionsResponse.json();
         this.setState({allQuestions : questionsBody.questions})
     }
 
     async viewQuestionsNeedWork(event) {
         console.log("Getting needsWork questions..")
-        const questionsResponse = await fetch(`/users/${this.state.username}/questions?onlyNeedsWork=true`);
+        const questionsResponse = await fetch(`${baseUrl}/users/${this.state.username}/questions?onlyNeedsWork=true`);
         const questionsBody = await questionsResponse.json();
         this.setState({allQuestions : questionsBody.questions})
     }
@@ -102,7 +102,7 @@ class AllQuestions extends React.Component {
     }
 
     async viewQuestion(id){
-        const questionResponse = await fetch(`/users/${this.state.username}/questions/${id}`);
+        const questionResponse = await fetch(`${baseUrl}/users/${this.state.username}/questions/${id}`);
         const questionBody = await questionResponse.json();
         this.setState({specificQuestion : questionBody.question, questionLoaded: true, isCreate: false})
         console.log(questionBody);
@@ -137,7 +137,7 @@ class AllQuestions extends React.Component {
             "tags": this.state.specificQuestion.tags
         }
 
-        const response = await fetch(`/users/${this.state.username}/questions/`, {
+        const response = await fetch(`${baseUrl}/users/${this.state.username}/questions/`, {
             method: 'POST',
             headers : {
                 'Accept' : 'application/json',
@@ -157,7 +157,7 @@ class AllQuestions extends React.Component {
         event.preventDefault();
         console.log("Deleting Question...")
 
-        const deleteQuestionResponse = await fetch(`/users/${this.state.username}/questions/${this.state.specificQuestion.questionId}`, {
+        const deleteQuestionResponse = await fetch(`${baseUrl}/users/${this.state.username}/questions/${this.state.specificQuestion.questionId}`, {
             method: 'DELETE'
         });
 
@@ -179,7 +179,7 @@ class AllQuestions extends React.Component {
             "tags": this.state.specificQuestion.tags
         }
         console.log(questionToUpdate);
-        const response = await fetch(`/users/${this.state.username}/questions/${this.state.specificQuestion.questionId}`, {
+        const response = await fetch(`${baseUrl}/users/${this.state.username}/questions/${this.state.specificQuestion.questionId}`, {
             method: 'PUT',
             headers: {
                 'Accept' : 'application/json',

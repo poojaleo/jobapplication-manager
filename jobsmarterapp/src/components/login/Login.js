@@ -9,7 +9,7 @@ import {GoToSignUpPage} from "./GoToSignUpPage";
 
 let username = "";
 let password = "";
-// const baseUrl = "https://7ehv0ovn6e.execute-api.us-west-2.amazonaws.com/prod";
+const baseUrl = "https://7ehv0ovn6e.execute-api.us-west-2.amazonaws.com/prod";
 
 function SignInClick() {
     let navigate = useNavigate();
@@ -26,8 +26,7 @@ function SignInClick() {
 
         console.log("Signing in....")
 
-        //users/harrypotter?password=Harry!12345
-        const userResponse = await fetch(`/users/${name}?password=${pass}`);
+        const userResponse = await fetch(`${baseUrl}/users/${name}?password=${pass}`);
         const userBody = await userResponse.json();
 
         console.log(userBody);
