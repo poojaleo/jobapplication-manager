@@ -1,0 +1,82 @@
+.loginPage {
+   font-family: 'Raleway', sans-serif;
+   padding: 100px;
+}
+
+.greeting {
+   display: flex;
+   justify-content: left;
+   margin-top: 50px;
+   font-weight: bold;
+}
+
+.underscore {
+   display: flex;
+   justify-content: left;
+}
+
+.underscore h5 {
+   color: #565757;
+   margin-top: 10px;
+}
+
+.form {
+   font-family: 'Cabin', sans-serif;
+   font-weight: bold;
+   font-size: 18px;
+   margin: 50px 0px;
+   text-align: left;
+   width: 500px;
+   color: #565757;
+}
+
+.login-input input[type=text] {
+   border-radius: 1em;
+   border: 1px #ee7836 solid;
+}
+
+.login-input input[type=password] {
+   border-radius: 1em;
+   border: 1px #ee7836 solid;
+}
+
+.button {
+   display: flex;
+   justify-content: left;
+   margin-top: 0px;
+}
+
+.signInClick {
+   border-radius: 1em;
+   background-color: #ee7836;
+   color: #FFFFFF;
+   font-weight: bold;
+   border: 2px solid #ee7836;
+   margin: 28px 7px 7px 7px;
+   padding: 0.2em 9.6em;
+}
+
+.updateClick {
+   border-radius: .2em;
+   background-color: #FFFFFF;
+   color: #ee7836;
+   border: 2px solid #FFFFFF;
+   margin: 7px;
+}
+
+.signInClick:hover {
+   background-color: #2ea2b1;
+   color: #FFFFFF;
+   border: 2px solid #2ea2b1;
+}
+
+.updateClick:hover {
+   color: #2ea2b1;
+   text-decoration-line: underline;
+}
+
+.homeImage {
+   float: right;
+   max-width: 100%;
+   height: auto;
+}

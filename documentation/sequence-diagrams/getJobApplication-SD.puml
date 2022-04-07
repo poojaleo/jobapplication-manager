@@ -1,0 +1,50 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor Client
+participant "API Gateway" as APIGateway
+participant Lambda
+participant GetJobApplicationActivity
+participant JobApplicationDao
+participant JobTrackerServiceUtils
+participant ModelConverter
+database DynamoDB
+
+Client -> APIGateway: GET user/{username}/jobapplications/{applicationId}
+activate Client
+APIGateway -> Lambda
+activate Lambda
+Lambda -> GetJobApplicationActivity: handleRequest(GetJobApplicationActivity, Context)
+activate GetJobApplicationActivity
+activate JobApplicationDao
+GetJobApplicationActivity -> JobApplicationDao: getJobApplication(userId, applicationId)
+JobApplicationDao -> DynamoDB: load(username, applicationId)
+
+alt if JobApplication does not exist
+DynamoDB -> JobApplicationDao : null
+JobApplicationDao -> GetJobApplicationActivity :
+GetJobApplicationActivity -> Lambda : throw JobApplicationNotFoundException
+Lambda -> APIGateway
+APIGateway -> Client : 404 response
+end otherwise continue
+
+DynamoDB -> JobApplicationDao : returns JobApplication
+
+
+GetJobApplicationActivity -> ModelConverter : toJobApplicationModel(JobApplication)
+activate ModelConverter
+ModelConverter --> GetJobApplicationActivity : JobApplicationModel
+deactivate ModelConverter
+GetJobApplicationActivity -> GetJobApplicationActivity: create GetJobApplicationResult
+GetJobApplicationActivity -> Lambda : GetJobApplicationResult
+deactivate GetJobApplicationActivity
+deactivate JobApplicationDao
+
+
+Lambda --> APIGateway
+deactivate Lambda
+APIGateway --> Client : 200 Response
+deactivate Client
+
+
+@enduml

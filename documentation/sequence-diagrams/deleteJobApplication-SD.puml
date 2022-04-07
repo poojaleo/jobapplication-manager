@@ -1,0 +1,33 @@
+@startuml
+
+actor Client
+participant "API Gateway" as APIGateway
+participant Lambda
+participant DeleteJobApplicationActivity
+participant JobApplicationDao
+database DynamoDB
+
+
+Client -> APIGateway: DELETE /user/{username}/jobapplications/{applicationId}
+activate Client
+APIGateway -> Lambda
+activate Lambda
+Lambda -> DeleteJobApplicationActivity: handleRequest(DeleteJobApplicationRequest, Context)
+DeleteJobApplicationActivity -> JobApplicationDao: deleteJobApplication(username, applicationId)
+JobApplicationDao -> DynamoDB: deleteItem(username, applicationId)
+
+alt if JobApplication does not exist
+DynamoDB -> JobApplicationDao : null
+JobApplicationDao -> DeleteJobApplicationActivity: false
+DeleteJobApplicationActivity -> Lambda : throw JobApplicationNotFoundException
+Lambda -> APIGateway
+APIGateway -> Client : 404 response
+end otherwise continue
+
+DynamoDB -> JobApplicationDao : JobApplication deleted
+JobApplicationDao -> DeleteJobApplicationActivity : true
+DeleteJobApplicationActivity -> Lambda
+Lambda -> APIGateway
+APIGateway -> Client : 200 response "Job Application Deleted"
+
+@enduml

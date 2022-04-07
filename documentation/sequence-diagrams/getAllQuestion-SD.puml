@@ -1,0 +1,41 @@
+@startuml
+title Get All Questions
+
+actor User
+participant "API Gateway" as APIGateway
+participant Lambda
+participant GetAllQuestionsActivity
+participant QuestionDao
+participant ModelConverter
+database DynamoDB
+
+User -> APIGateway : GET /users/{username}/questions
+activate User
+APIGateway -> Lambda
+activate Lambda
+Lambda -> GetAllQuestionsActivity :  handleRequest(GetAllQuestionsRequest, Context)
+activate GetAllQuestionsActivity
+
+GetAllQuestionsActivity -> QuestionDao : getAllQuestions(String : userId)
+activate QuestionDao
+QuestionDao -> DynamoDB : query all questions for that user ID
+activate DynamoDB
+'can we load by partition key or do we need the userDao
+
+
+QuestionDao <-- DynamoDB : List<Question>
+deactivate DynamoDB
+GetAllQuestionsActivity <-- QuestionDao : List<Question>
+deactivate QuestionDao
+GetAllQuestionsActivity -> ModelConverter : toQuestionModelList(List<Question>)
+activate ModelConverter
+GetAllQuestionsActivity <-- ModelConverter : List<QuestionModel>
+deactivate ModelConverter
+Lambda <-- GetAllQuestionsActivity : GetAllQuestionsResult
+deactivate GetAllQuestionsActivity
+APIGateway <-- Lambda
+deactivate Lambda
+User <-- APIGateway : 200 Response
+deactivate User
+
+@enduml

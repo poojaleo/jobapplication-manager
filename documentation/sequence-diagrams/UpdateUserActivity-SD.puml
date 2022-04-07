@@ -1,0 +1,89 @@
+@startuml
+title Update User
+
+actor Client
+participant "API Gateway" as APIGateway
+participant Lambda
+participant UpdateUserActivity
+participant UserDao
+participant ModelConverter
+participant JobTrackerServiceUtils
+database DynamoDB
+
+
+Client -> APIGateway : PUT /user/{username}
+activate Client
+
+
+APIGateway -> Lambda
+activate Lambda
+
+Lambda -> UpdateUserActivity : handleRequest(UpdateUserRequest, Context)
+activate UpdateUserActivity
+
+
+UpdateUserActivity -> UserDao : getUser(username)
+activate UserDao
+
+UserDao -> DynamoDB : lookup by user username
+activate DynamoDB
+
+alt if user does not exist
+    DynamoDB --> UserDao : return with no item data
+    UserDao --> UpdateUserActivity : throw UserNotFoundException
+    UpdateUserActivity --> APIGateway : propagate UserNotFoundException
+    Client <-- APIGateway : 404 Response
+    else otherwise, continue
+end
+
+DynamoDB --> UserDao : return User data
+deactivate DynamoDB
+
+UserDao --> UpdateUserActivity : return User Object
+deactivate UserDao
+
+UpdateUserActivity --> JobTrackerServiceUtils : isValidString(firstname)
+activate JobTrackerServiceUtils
+UpdateUserActivity --> JobTrackerServiceUtils : isValidString(lastname)
+UpdateUserActivity --> JobTrackerServiceUtils : isValidPassword(password)
+
+alt if firstname or lastname or password invalid
+    UpdateUserActivity <-- JobTrackerServiceUtils : false
+    Lambda <-- UpdateUserActivity : throw InvalidAttributeValueException
+    APIGateway <-- Lambda
+    Client <-- APIGateway : 400 Response
+else otherwise, continue
+end
+deactivate JobTrackerServiceUtils
+
+
+
+UpdateUserActivity -> UpdateUserActivity : updateUser
+UpdateUserActivity -> UserDao : saveUser(user)
+activate UserDao
+UserDao -> DynamoDB : store User
+activate DynamoDB
+
+DynamoDB --> UserDao : return 200 response
+deactivate DynamoDB
+
+UserDao --> UpdateUserActivity : return updated User object
+deactivate UserDao
+
+UpdateUserActivity -> ModelConverter : toUserModel(User)
+activate ModelConverter
+UpdateUserActivity <-- ModelConverter : UserModel
+deactivate ModelConverter
+
+
+UpdateUserActivity -> UpdateUserActivity: Create UpdateUserResult
+
+UpdateUserActivity --> Lambda : return UpdateUserResult
+deactivate UpdateUserActivity
+APIGateway <-- Lambda
+deactivate Lambda
+Client <-- APIGateway : return 200 response
+
+deactivate Client
+
+@enduml

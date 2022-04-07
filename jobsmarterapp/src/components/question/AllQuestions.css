@@ -1,0 +1,125 @@
+.interviewPrep {
+    margin: 75px;
+    font-family: 'Cabin', 'Raleway', sans-serif;
+}
+
+.questions h4 {
+    padding: 10px 20px;
+    font-style: italic;
+    color: var(--color-cadet-blue);
+}
+
+.questionsTable Table {
+    margin-top: 25px;
+    display: block;
+    height: 40vh;
+    width: auto;
+    overflow-y: scroll;
+}
+
+.questionsHeading {
+    display: flex;
+    justify-content: left;
+}
+
+.questionTopRow {
+    display: flex;
+    justify-content: center;
+}
+
+.applicationNav {
+    display: flex;
+    justify-content: center;
+}
+
+.applicationNav h3 {
+    margin-left: 200px;
+    font-weight: bold;
+    color: #565757;
+    padding-top: 10px;
+}
+
+.createQuestion {
+    display: flex;
+    justify-content: space-between;
+}
+
+.questForm {
+    padding-top: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.questionForm {
+    display: flex;
+    flex-direction: column;
+
+}
+
+.questionForm Button {
+    margin: 15px 75px;
+    background-color: var(--color-orange);
+    font-weight: normal;
+}
+
+.questionForm input {
+    margin: 5px;
+    padding: 5px;
+}
+
+.questionCreate {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.questionCreate h3 {
+    color: var(--color-orange);
+    padding-top: 10px;
+}
+
+.questionCreate Button {
+    margin: 15px 75px;
+    background-color: var(--color-orange);
+    height: 50px;
+    font-weight: bold;
+}
+
+
+.questionRows .editButton {
+    background-color: var(--color-cadet-blue);
+    border-color: var(--color-duck-blue);
+    color: var(--color-white);
+}
+
+.questionRows .editButton:hover{
+    background-color: var(--color-orange);
+}
+
+
+.displayTable th {
+    color: var(--color-orange);
+}
+
+.displayTable {
+    overflow-y: scroll;
+
+}
+
+.jobApplicationsButton {
+    font-family: 'Cabin', 'Raleway', sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    color: #ee7836;
+    border: 2px solid #FFFFFF;
+    margin: 7px 7px 7px 200px;
+}
+
+.jobApplicationsButton:hover {
+    background-color: #FFFFFF;
+    color: #2ea2b1;
+    text-decoration-line: underline;
+}
+

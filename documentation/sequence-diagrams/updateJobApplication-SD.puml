@@ -1,0 +1,63 @@
+@startuml
+
+actor Client
+participant "API Gateway" as APIGateway
+participant Lambda
+participant UpdateJobApplicationActivity
+participant JobApplicationDao
+participant JobTrackerServiceUtils
+participant ModelConverter
+database DynamoDB
+
+Client -> APIGateway: PUT user/{username}/jobapplications/{applicationId}
+activate Client
+APIGateway -> Lambda
+activate Lambda
+Lambda -> UpdateJobApplicationActivity: handleRequest(UpdateJobApplicationRequest, Context)
+activate UpdateJobApplicationActivity
+UpdateJobApplicationActivity -> JobApplicationDao: getJobApplication(applicationId)
+JobApplicationDao -> DynamoDB: load(username, applicationId)
+
+alt if JobApplication does not exist
+DynamoDB -> JobApplicationDao : null
+JobApplicationDao -> UpdateJobApplicationActivity : null
+UpdateJobApplicationActivity -> Lambda : throw JobApplicationNotFoundException
+Lambda -> APIGateway
+APIGateway -> Client : 404 response
+end otherwise continue
+
+DynamoDB -> JobApplicationDao : return JobApplication
+JobApplicationDao -> UpdateJobApplicationActivity: return JobApplication
+UpdateJobApplicationActivity -> JobTrackerServiceUtils : validate updated fields
+
+
+alt if Update contains invalid fields
+JobTrackerServiceUtils -> UpdateJobApplicationActivity: false
+UpdateJobApplicationActivity -> Lambda: throw InvalidAttributeValueException
+Lambda -> APIGateway
+APIGateway -> Client : 400 response
+else otherwise continue
+end
+
+UpdateJobApplicationActivity -> UpdateJobApplicationActivity: update JobApplication object
+UpdateJobApplicationActivity -> JobApplicationDao: saveJobApplication(JobApplication)
+JobApplicationDao -> DynamoDB: save JobApplication
+DynamoDB --> JobApplicationDao
+JobApplicationDao --> UpdateJobApplicationActivity : JobApplication
+UpdateJobApplicationActivity -> ModelConverter : toJobApplicationModel(JobApplication)
+activate ModelConverter
+ModelConverter --> UpdateJobApplicationActivity : JobApplicationModel
+deactivate ModelConverter
+UpdateJobApplicationActivity -> UpdateJobApplicationActivity : create UpdateJobApplicationResult
+UpdateJobApplicationActivity --> Lambda : UpdateJobApplicationResult
+deactivate UpdateJobApplicationActivity
+deactivate JobApplicationDao
+Lambda --> APIGateway
+deactivate Lambda
+APIGateway --> Client : 200 Response
+
+
+
+
+
+@enduml

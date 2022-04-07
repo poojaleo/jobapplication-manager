@@ -1,0 +1,55 @@
+@startuml
+title Update Question
+
+actor User
+participant "API Gateway" as APIGateway
+participant Lambda
+participant UpdateQuestionActivity
+participant QuestionDao
+participant ModelConverter
+database DynamoDB
+
+User -> APIGateway : PUT /users/{username}/questions/{questionId}
+activate User
+APIGateway -> Lambda
+activate Lambda
+Lambda -> UpdateQuestionActivity :  handleRequest(UpdateQuestionRequest, Context)
+activate UpdateQuestionActivity
+alt if invalid userId provided
+    Lambda <-- UpdateQuestionActivity : throw UserNotFoundException
+    APIGateway <-- Lambda
+    User <-- APIGateway : 404 Response
+else otherwise, continue
+end
+alt if question ID does not exist
+    Lambda <-- UpdateQuestionActivity : throw QuestionNotFoundException
+    APIGateway <-- Lambda
+    User <-- APIGateway : 404 Response
+else otherwise, continue
+end
+alt if invalid tags provided
+    Lambda <-- UpdateQuestionActivity : throw InvalidAttributeValueException
+    APIGateway <-- Lambda
+    User <-- APIGateway : 400 Response
+else otherwise, continue
+end
+UpdateQuestionActivity -> QuestionDao : saveQuestion(String, String)
+activate QuestionDao
+QuestionDao -> DynamoDB : save Question
+activate DynamoDB
+QuestionDao <-- DynamoDB : Question
+deactivate DynamoDB
+UpdateQuestionActivity <-- QuestionDao : Question
+deactivate QuestionDao
+UpdateQuestionActivity -> ModelConverter : toQuestionModel(Question)
+activate ModelConverter
+UpdateQuestionActivity <-- ModelConverter : QuestionModel
+deactivate ModelConverter
+Lambda <-- UpdateQuestionActivity : UpdateQuestionResult
+deactivate UpdateQuestionActivity
+APIGateway <-- Lambda
+deactivate Lambda
+User <-- APIGateway : 200 Response
+deactivate User
+
+@enduml

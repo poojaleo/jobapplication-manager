@@ -1,0 +1,75 @@
+@startuml
+title Create User
+
+actor Client
+participant "API Gateway" as APIGateway
+participant Lambda
+participant CreateUserActivity
+participant UserDao
+participant JobTrackerServiceUtils
+participant ModelConverter
+database DynamoDB
+
+Client -> APIGateway : POST /user
+activate Client
+APIGateway -> Lambda
+activate Lambda
+
+
+Lambda -> CreateUserActivity : handleRequest(CreateUserRequest, Context)
+activate CreateUserActivity
+
+CreateUserActivity -> JobTrackerServiceUtils : isValidString(username)
+activate JobTrackerServiceUtils
+CreateUserActivity -> JobTrackerServiceUtils : isValidString(firstname)
+
+CreateUserActivity -> JobTrackerServiceUtils : isValidString(lastname)
+CreateUserActivity -> JobTrackerServiceUtils : isValidEmailAddress(emailAddress)
+CreateUserActivity -> JobTrackerServiceUtils : isValidPassword(password)
+
+alt if username or firstname or lastname or emailAddress or password invalid
+    CreateUserActivity <-- JobTrackerServiceUtils : false
+    Lambda <-- CreateUserActivity : throw InvalidAttributeValueException
+    APIGateway <-- Lambda
+    Client <-- APIGateway : 400 Response
+else otherwise, continue
+end
+
+CreateUserActivity -> UserDao : loadUser(username)
+activate UserDao
+
+alt if username already exists
+    CreateUserActivity <-- UserDao : returns User
+    Lambda <-- CreateUserActivity : throw UserAlreadyExistsException
+    APIGateway <-- Lambda
+    Client <-- APIGateway : 409 Response
+else otherwise, continue
+end
+
+deactivate JobTrackerServiceUtils
+
+CreateUserActivity -> CreateUserActivity : populate User object
+
+
+CreateUserActivity -> UserDao : saveUser(User)
+
+UserDao -> DynamoDB : save user
+activate DynamoDB
+UserDao <-- DynamoDB
+deactivate DynamoDB
+CreateUserActivity <-- UserDao : User
+deactivate UserDao
+CreateUserActivity -> ModelConverter : toUserModel(User)
+activate ModelConverter
+CreateUserActivity <-- ModelConverter : UserModel
+deactivate ModelConverter
+CreateUserActivity -> CreateUserActivity : CreateUserResult
+Lambda <-- CreateUserActivity : CreateUserResult
+
+deactivate CreateUserActivity
+APIGateway <-- Lambda
+deactivate Lambda
+Client <-- APIGateway : 200 Response
+deactivate Client
+
+@enduml

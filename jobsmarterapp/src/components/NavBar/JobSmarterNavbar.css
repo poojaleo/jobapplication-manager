@@ -1,0 +1,15 @@
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+}
+
+h1 {
+    font-family: 'Raleway', sans-serif;
+    text-align: center;
+    color: #ee7836;
+    padding-top: 15px;
+}
+
+.user-select {
+    padding-top: 15px;
+}

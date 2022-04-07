@@ -1,0 +1,15 @@
+.login-select {
+    border-radius: 1em;
+    background-color: #ee7836;
+    color: #FFFFFF;
+    border: 2px solid #ee7836;
+    margin-left: 25px;
+    padding: 5px 10px;
+    font-size: 20px;
+}
+
+.login-select:hover {
+    background-color: #2ea2b1;
+    color: #FFFFFF;
+    border: 2px solid #2ea2b1;
+}

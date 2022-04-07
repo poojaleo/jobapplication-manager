@@ -1,0 +1,691 @@
+openapi: 3.0.2
+servers:
+  - url: http://localhost:8080
+info:
+  description: |-
+    Managing multiple job applications while searching for jobs is time-consuming and difficult to organize. JobSmarter is an application management service for active job searchers to create and track job applications. JobSmarter helps its users make sure they never lose track of a position again! With JobSmarter, you can easily monitor the current state of all your applications at a glance. JobSmarter also helps to organize your documents and prepare for your interview by creating customized question bank.
+    
+    Some useful links:
+    - [The JobSmarter repository](https://github.com/BloomTechBackend/bd-team-project-jobsmarter)
+    - [API Documentation](https://github.com/BloomTechBackend/bd-team-project-jobsmarter/blob/main/jobsmarter_project/src/resources/SwaggerAPI/jobsmarter.yaml)
+  version: 1.0.0
+  title: JobSmarter API
+
+paths:
+  /users/{username}:
+    get:
+      summary: Get existing user
+      description: Accepts a username and returns the corresponding user details
+      parameters:
+        - name: username
+          in: path
+          description: unique username of the user
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: password
+          required: true
+          schema:
+            type: string
+
+      responses:
+        "200":
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserDetails"
+        "500":
+          description: Internal Server Error
+        404:
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User with username not found
+        401:
+          description: Incorrect Password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Incorrect Password
+
+    put:
+      summary: Updates existing user
+      description: Updates user that already exists in the database.
+      parameters:
+        - name: username
+          in: path
+          description: unique username of the user
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Updates existing user
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateUserRequest"
+
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserDetails"
+        500:
+          description: Internal Server Error
+        404:
+          description: User Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User with username not found
+
+        400:
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+
+
+  /users:
+    post:
+      summary: creates new user
+      description: Creates a new user
+      requestBody:
+        description: Creates a new user. Variables username, firstname, emailAddress and password are required parameters. Variable lastname is optional.
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateUserRequest"
+
+
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/UserDetails"
+
+        500:
+          description: Internal Server Error
+
+        400:
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+        409:
+          description: User with specified username already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Specified username already exists
+
+  /users/{username}/jobapplications:
+    get:
+      summary: Get all job applications for the user
+      description: Accepts a username and returns all job applications of the user.
+      parameters:
+        - name: username
+          in: path
+          description: unique username of the user
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/JobApplicationDetails"
+        500:
+          description: Internal Server Error
+
+    post:
+      summary: Create new job application
+      description: Create new job application of the user. Variables job title, company and status are required fields. Rest of the variables are optional.
+      parameters:
+        - name: username
+          in: path
+          description: unique username of the user
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description:  Creates new job application.
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/JobApplicationCreateRequest"
+
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/JobApplicationDetails"
+        400:
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        "500":
+          description: Internal Server Error
+
+  /user/{username}/jobapplications/{applicationId}:
+    get:
+      summary: get specific job application
+      description: get job application details for specific applicationId for specified username
+      parameters:
+        - name: username
+          in: path
+          description: unique username of the user
+          required: true
+          schema:
+            type: string
+        - name: applicationId
+          in: path
+          description: unique spplicationId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/JobApplicationDetails"
+        404:
+          description: Job Application Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Job Application not found
+        500:
+          description: Internal Server Error
+
+    put:
+      summary: update specific job applicatipn
+      description: update job application details for specific applicationId for specified username
+      parameters:
+        - name: username
+          in: path
+          description: unique username of the user
+          required: true
+          schema:
+            type: string
+        - name: applicationId
+          in: path
+          description: unique spplicationId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Updates existing job application.
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/JobApplicationUpdateRequest"
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/JobApplicationDetails"
+        404:
+          description: Job Application Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Job Application not found
+        400:
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+        500:
+          description: Internal Server Error
+
+    delete:
+      summary: delete specific job applicatipn
+      description: deletes job application for specific applicationId for specified username
+      parameters:
+        - name: username
+          in: path
+          description: unique username of the user
+          required: true
+          schema:
+            type: string
+        - name: applicationId
+          in: path
+          description: unique spplicationId
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/JobApplicationDetails"
+        404:
+          description: Job Application Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Job Application not found
+        500:
+          description: Internal Server Error
+
+  /users/{username}/questions:
+    get:
+      summary: Get all Questions for the user
+      description: Accepts a username and returns all Questions of the user.
+      parameters:
+        - name: username
+          in: path
+          description: unique Username of the user
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/QuestionDetails"
+        500:
+          description: Internal Server Error
+
+    post:
+      summary: Create a new Question
+      description: Creates new Question for the user. Variables username, question and needsWork are required fields. Rest of the variables are optional.
+      parameters:
+        - name: username
+          in: path
+          description: unique Username of the user
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description:  Creates new Question.
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateQuestionRequest"
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/QuestionDetails"
+        400:
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Provided question has invalid character values.
+        409:
+          description: Question Already Exist
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Question Already exists
+        500:
+          description: Internal Server Error
+
+  /users/{username}/questions/{questionId}:
+    get:
+      summary: Gets a specific Question of the user
+      description: Accepts a username and a questionId and returns the corresponding Question details
+      parameters:
+        - name: username
+          in: path
+          description: unique Username of the user
+          required: true
+          schema:
+            type: string
+        - name: questionId
+          in: path
+          description: unique QuestionId of the question
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/QuestionDetails"
+        404:
+          description: Question Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Question with questionId or username not found.
+        500:
+          description: Internal Server Error
+
+    put:
+      summary: Update a specific Question
+      description: Update Question details for specified username and questionId that already exists in database. Variable needsWork is a required field. Rest of the variables are optional.
+      parameters:
+        - name: username
+          in: path
+          description: Unique Username of the user
+          required: true
+          schema:
+            type: string
+        - name: questionId
+          in: path
+          description: Unique QuestionId of the question
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: Updates existing Question.
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/UpdateQuestionRequest"
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/QuestionDetails"
+        400:
+          description: Invalid parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Provided tag has invalid character values.
+        404:
+          description: Question Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Question not found.
+        500:
+          description: Internal Server Error
+
+    delete:
+      summary: Delete specific Question
+      description: Deletes Question for specified questionId and specified username. Returns the deleted Question object.
+      parameters:
+        - name: username
+          in: path
+          description: unique Username of the user
+          required: true
+          schema:
+            type: string
+        - name: questionId
+          in: path
+          description: unique QuestionId of the question
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successful Operation
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/QuestionDetails"
+        404:
+          description: Question Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Question not found.
+        500:
+          description: Internal Server Error
+components:
+  schemas:
+    UserDetails:
+      type: object
+      properties:
+        username:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        emailAddress:
+          type: string
+    UpdateUserRequest:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        emailAddress:
+          type: string
+        password:
+          type: string
+    CreateUserRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        firstname:
+          type: string
+        lastname:
+          type: string
+        emailAddress:
+          type: string
+        password:
+          type: string
+    JobApplicationDetails:
+      type: object
+      properties:
+        username:
+          type: string
+        applicationId:
+          type: string
+        jobTitle:
+          type: string
+        company:
+          type: string
+        location:
+          type: string
+        status:
+          type: string
+        nextReminder:
+          type: string
+        notes:
+          type: string
+        jobUrlLink:
+          type: string
+        questionsList:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+    JobApplicationCreateRequest:
+      type: object
+      properties:
+        jobTitle:
+          type: string
+        company:
+          type: string
+        location:
+          type: string
+        status:
+          type: string
+        nextReminder:
+          type: string
+        notes:
+          type: string
+        jobUrlLink:
+          type: string
+    JobApplicationUpdateRequest:
+      type: object
+      properties:
+        jobTitle:
+          type: string
+        company:
+          type: string
+        location:
+          type: string
+        status:
+          type: string
+        nextReminder:
+          type: string
+        notes:
+          type: string
+        jobUrlLink:
+          type: string
+        questionsList:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+    QuestionDetails:
+      type: object
+      properties:
+        username:
+          type: string
+        questionId:
+          type: string
+        question:
+          type: string
+        needsWork:
+          type: boolean
+        answer:
+          type: string
+        tags:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+    CreateQuestionRequest:
+      type: object
+      properties:
+        question:
+          type: string
+        needsWork:
+          type: boolean
+        answer:
+          type: string
+        tags:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string
+    UpdateQuestionRequest:
+      type: object
+      properties:
+        question:
+          type: string
+        needsWork:
+          type: boolean
+        answer:
+          type: string
+        tags:
+          type: array
+          xml:
+            wrapped: true
+          items:
+            type: string

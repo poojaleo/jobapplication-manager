@@ -1,0 +1,75 @@
+@startuml
+title Add Question to Job Application
+
+actor User
+participant "API Gateway" as APIGateway
+participant Lambda
+participant AddQuestionToJobApplicationActivity
+participant JobApplicationDao
+participant QuestionDao
+participant ModelConverter
+database DynamoDB
+
+User -> APIGateway : PUT /users/{username}/jobapplications/{applicationId}/questions/{questionId}
+activate User
+APIGateway -> Lambda
+activate Lambda
+Lambda -> AddQuestionToJobApplicationActivity :  handleRequest(AddQuestionToJobApplicationRequest, Context)
+activate AddQuestionToJobApplicationActivity
+alt if invalid userId provided
+    Lambda <-- AddQuestionToJobApplicationActivity : throw UserNotFoundException
+    APIGateway <-- Lambda
+    User <-- APIGateway : 400 Response
+else otherwise, continue
+end
+AddQuestionToJobApplicationActivity -> JobApplicationDao : getJobApplication(String, String)
+activate JobApplicationDao
+JobApplicationDao -> DynamoDB : get Job Application
+activate DynamoDB
+alt if application ID does not exist
+    JobApplicationDao <-- DynamoDB : null
+    Lambda <-- JobApplicationDao : throw JobApplicationNotFoundException
+    APIGateway <-- Lambda
+    User <-- APIGateway : 404 Response
+else otherwise, continue
+end
+JobApplicationDao <-- DynamoDB : JobApplication
+deactivate DynamoDB
+AddQuestionToJobApplicationActivity <-- JobApplicationDao : JobApplication
+deactivate JobApplicationDao
+AddQuestionToJobApplicationActivity -> QuestionDao : getQuestion(String, String)
+activate QuestionDao
+QuestionDao -> DynamoDB : get Question
+activate DynamoDB
+alt if question ID does not exist
+    QuestionDao <-- DynamoDB : null
+    Lambda <-- QuestionDao : throw QuestionNotFoundException
+    APIGateway <-- Lambda
+    User <-- APIGateway : 404 Response
+else otherwise, continue
+end
+QuestionDao <-- DynamoDB : Question
+deactivate DynamoDB
+AddQuestionToJobApplicationActivity <-- QuestionDao : Question
+deactivate QuestionDao
+
+AddQuestionToJobApplicationActivity -> JobApplicationDao : saveJobApplication(JobApplication)
+JobApplicationDao -> DynamoDB : saveJobApplication(JobApplication)
+activate DynamoDB
+
+JobApplicationDao <-- DynamoDB : return JobApplication
+deactivate DynamoDB
+AddQuestionToJobApplicationActivity <-- JobApplicationDao
+
+AddQuestionToJobApplicationActivity -> ModelConverter : toJobApplicationModel(JobApplication)
+activate ModelConverter
+AddQuestionToJobApplicationActivity <-- ModelConverter : JobApplicationModel
+deactivate ModelConverter
+Lambda <-- AddQuestionToJobApplicationActivity : AddQuestionToJobApplicationResult
+deactivate AddQuestionToJobApplicationActivity
+APIGateway <-- Lambda
+deactivate Lambda
+User <-- APIGateway : 200 Response
+deactivate User
+
+@enduml

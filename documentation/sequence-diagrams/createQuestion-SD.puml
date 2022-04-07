@@ -1,0 +1,74 @@
+@startuml
+title Create Question
+
+actor User
+participant "API Gateway" as APIGateway
+participant Lambda
+participant CreateQuestionActivity
+participant JobTrackerServiceUtils
+participant QuestionDao
+participant ModelConverter
+database DynamoDB
+
+User -> APIGateway : POST /users/{username}/questions
+activate User
+APIGateway -> Lambda
+activate Lambda
+Lambda -> CreateQuestionActivity :  handleRequest(CreateQuestionRequest, Context)
+activate CreateQuestionActivity
+alt if invalid question, answer or tags are provided
+    CreateQuestionActivity -> JobTrackerServiceUtils
+    activate JobTrackerServiceUtils
+    CreateQuestionActivity <-- JobTrackerServiceUtils
+    deactivate JobTrackerServiceUtils
+    Lambda <-- CreateQuestionActivity : throw InvalidAttributeValueException
+    APIGateway <-- Lambda
+    User <-- APIGateway : 400 Response
+else otherwise, continue
+end
+
+CreateQuestionActivity -> QuestionDao : loadQuestion(String, String)
+activate QuestionDao
+alt if question already exists
+
+    CreateQuestionActivity <-- QuestionDao : returns Question
+    Lambda <-- CreateQuestionActivity : throw QuestionAlreadyExistsException
+    APIGateway <-- Lambda
+    User <-- APIGateway : 409 Response
+else otherwise, continue
+end
+
+CreateQuestionActivity -> JobTrackerServiceUtils : generateId()
+activate JobTrackerServiceUtils
+CreateQuestionActivity <-- JobTrackerServiceUtils : questionId
+
+
+alt if id already exists
+    CreateQuestionActivity -> QuestionDao : loadQuestion(String, String)
+    CreateQuestionActivity <-- QuestionDao : returns Question
+    CreateQuestionActivity <-- CreateQuestionActivity : generate new id
+
+else otherwise, continue
+end
+
+deactivate JobTrackerServiceUtils
+CreateQuestionActivity -> QuestionDao : saveQuestion(String, String)
+
+QuestionDao -> DynamoDB : save Question
+activate DynamoDB
+QuestionDao <-- DynamoDB : Question
+deactivate DynamoDB
+CreateQuestionActivity <-- QuestionDao : Question
+deactivate QuestionDao
+CreateQuestionActivity -> ModelConverter : toQuestionModel(Question)
+activate ModelConverter
+CreateQuestionActivity <-- ModelConverter : QuestionModel
+deactivate ModelConverter
+Lambda <-- CreateQuestionActivity : CreateQuestionResult
+deactivate CreateQuestionActivity
+APIGateway <-- Lambda
+deactivate Lambda
+User <-- APIGateway : 200 Response
+deactivate User
+
+@enduml

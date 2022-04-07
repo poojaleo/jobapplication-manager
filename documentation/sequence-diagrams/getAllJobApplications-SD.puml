@@ -1,0 +1,43 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+actor Client
+participant "API Gateway" as APIGateway
+participant Lambda
+participant GetAllJobApplicationsActivity
+participant JobApplicationDao
+participant JobTrackerServiceUtils
+participant ModelConverter
+database DynamoDB
+
+Client -> APIGateway: GET user/{username}/jobapplications
+activate Client
+APIGateway -> Lambda
+activate Lambda
+Lambda -> GetAllJobApplicationsActivity: handleRequest(GetAllJobApplicationsActivity, Context)
+activate GetAllJobApplicationsActivity
+activate JobApplicationDao
+GetAllJobApplicationsActivity -> JobApplicationDao: getAllJobApplication(username)
+JobApplicationDao -> DynamoDB: load(username)
+
+
+DynamoDB -> JobApplicationDao : returns List<JobApplication>
+
+
+GetAllJobApplicationsActivity -> ModelConverter : toJobApplicationListModel(List<JobApplication>)
+activate ModelConverter
+ModelConverter --> GetAllJobApplicationsActivity : List<JobApplicationModel>
+deactivate ModelConverter
+GetAllJobApplicationsActivity -> GetAllJobApplicationsActivity : create GetAllJobApplicationsResult
+GetAllJobApplicationsActivity -> Lambda :  GetAllJobApplicationsResult
+deactivate GetAllJobApplicationsActivity
+deactivate JobApplicationDao
+
+
+Lambda --> APIGateway
+deactivate Lambda
+APIGateway --> Client : 200 Response
+deactivate Client
+
+
+@enduml

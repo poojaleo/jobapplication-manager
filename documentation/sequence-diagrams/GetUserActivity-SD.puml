@@ -1,0 +1,56 @@
+@startuml
+title Get User
+
+actor Client
+participant "API Gateway" as APIGateway
+participant Lambda
+participant GetUserActivity
+participant UserDao
+participant ModelConverter
+database DynamoDB
+
+Client -> APIGateway : GET /user/{username}
+activate Client
+APIGateway -> Lambda
+activate Lambda
+
+
+Lambda -> GetUserActivity :  handleRequest(GetUserRequest, Context)
+activate GetUserActivity
+GetUserActivity -> UserDao : getUser(requested username : String)
+activate UserDao
+UserDao -> DynamoDB : load user by username
+activate DynamoDB
+alt if username does not exist
+    UserDao <-- DynamoDB : null
+    Lambda <-- UserDao : throw UserNotFoundException
+    APIGateway <-- Lambda
+    Client <-- APIGateway : 404 Response
+else otherwise, continue
+end
+
+UserDao <-- DynamoDB : User
+deactivate DynamoDB
+GetUserActivity <-- UserDao : User
+deactivate UserDao
+alt if password does not match
+   GetUserActivity -> GetUserActivity : check if password matches
+    Lambda <-- GetUserActivity : throw InvalidPasswordException
+    APIGateway <-- Lambda
+    Client <-- APIGateway : 401 Response
+else otherwise, continue
+end
+GetUserActivity -> ModelConverter : toUserModel(User)
+activate ModelConverter
+GetUserActivity <-- ModelConverter : UserModel
+deactivate ModelConverter
+GetUserActivity -> GetUserActivity : create GetUserResult
+Lambda <-- GetUserActivity : GetUserResult
+deactivate GetUserActivity
+
+APIGateway <-- Lambda
+
+deactivate Lambda
+Client <-- APIGateway : 200 Response
+deactivate Client
+@enduml

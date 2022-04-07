@@ -1,0 +1,37 @@
+Resources:
+  QuestionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "username"
+          AttributeType: "S"
+        - AttributeName: "questionId"
+          AttributeType: "S"
+        - AttributeName: "needsWork"
+          AttributeType: "S"
+        - AttributeName: "question"
+          AttributeType: "S"
+      KeySchema:
+        - AttributeName: "username"
+          KeyType: "HASH"
+        - AttributeName: "questionId"
+          KeyType: "RANGE"
+      BillingMode: PAY_PER_REQUEST
+      TableName: "Questions"
+      GlobalSecondaryIndexes:
+        - IndexName: "NeedsWorkIndex"
+          KeySchema:
+            - AttributeName: "username"
+              KeyType: "HASH"
+            - AttributeName: "needsWork"
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: "ALL"
+        - IndexName: "QuestionExistIndex"
+          KeySchema:
+            - AttributeName: "username"
+              KeyType: "HASH"
+            - AttributeName: "question"
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: "KEYS_ONLY"

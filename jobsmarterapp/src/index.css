@@ -1,0 +1,20 @@
+body {
+  margin: 0;
+  font-family: 'Cabin', 'Raleway', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --color-duck-blue: #01637A;
+  --color-cadet-blue: #2EA2B1;
+  --color-orange: #EE7836;
+  --color-brown: #B85D2A;
+  --color-dark-green: #001B21;
+  --color-black: #000000;
+  --color-white: #FFFFFF;
+  --color-dark-grey: #565757;
+  --color-light-grey: #B2B3B4;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}

@@ -1,0 +1,178 @@
+@startuml
+
+class User {
+@DynamoDBHashKey username : string
+firstname : String
+lastname : String
+emailAddress : String
+password: String
+}
+
+class UserDao {
+- dynamoDbMapper : DynamoDBMapper
++ getUser(String) : User
++ saveUser(String) : User
+}
+
+class CreateUserActivity {
+- Logger log
+- UserDao userDao
++ handleRequest(CreateUserRequest, Context)
+}
+
+class GetUserActivity {
+- Logger log
+- UserDao userDao
++ handleRequest(GetUserRequest, Context)
+}
+
+class UpdateUserActivity {
+- Logger log
+- UserDao userDao
++ handleRequest(UpdateUserRequest, Context)
+}
+
+
+class JobApplication {
+@DynamoDBHashKey username : String
+@DynamoDBRangeKey ApplicationId : String
+jobTitle: String
+company: String
+location : String
+status: String
+nextReminder: String
+notes : String
+jobUrlLink : String
+createdAt : String
+questionsList : StringList
+}
+
+class JobApplicationDao {
+- dynamoDbMapper : DynamoDBMapper
++ getJobApplication(String, String) : JobApplication
++ saveJobApplication(JobApplication) : JobApplication
++ getAllJobApplications(String) : List<JobApplication>
+}
+
+class GetAllJobApplicationActivity {
+- Logger log
+- JobApplicationDao jobApplicationDao
++ handleRequest(GetAllJobApplicationRequest, Context)
+}
+
+class CreateJobApplicationActivity {
+- Logger log
+- JobApplicationDao jobApplicationDao
++ handleRequest(CreateJobApplicationRequest, Context)
+}
+
+class GetJobApplicationActivity {
+- Logger log
+- JobApplicationDao jobApplicationDao
++ handleRequest(GetJobApplicationRequest, Context)
+}
+
+class UpdateJobApplicationActivity {
+- Logger log
+- JobApplicationDao jobApplicationDao
++ handleRequest(UpdateJobApplicationRequest, Context)
+}
+
+class DeleteJobApplicationActivity {
+- Logger log
+- JobApplicationDao jobApplicationDao
++ handleRequest(DeleteJobApplicationRequest, Context)
+}
+
+class AddQuestionToJobApplication {
+- Logger log
+- JobApplicationDao jobApplicationDao
+- QuestionDao questionDao
++ handleRequest(AddQuestionToJobApplicationRequest, Context)
+}
+
+interface RequestHandler {
+O handleRequest(I input, Context context)
+}
+
+class Question {
+@DynamoDBHashKey username : String
+@DynamoDBRangeKey questionId : String
+question: String
+answer: String
+needsWork: Boolean
+tags : StringList
+}
+
+class QuestionDao {
+- dynamoDbMapper : DynamoDBMapper
++ getQuestion(String, String) : Question
++ saveQuestion(String, String) : Question
++ getAllQuestions(String) : List<Question>
+}
+
+class CreateQuestionActivity {
+- Logger log
+- QuestionDao questionDao
++ handleRequest(CreateQuestionRequest, Context)
+}
+
+class GetQuestionActivity {
+- Logger log
+- QuestionDao questionDao
++ handleRequest(GetQuestionRequest, Context)
+}
+
+class UpdateQuestionActivity {
+- Logger log
+- QuestionDao questionDao
++ handleRequest(UpdateQuestionRequest, Context)
+}
+
+class DeleteQuestionActivity {
+- Logger log
+- QuestionDao questionDao
++ handleRequest(DeleteQuestionRequest, Context)
+}
+
+class GetAllQuestionActivity {
+- Logger log
+- QuestionDao questionDao
++ handleRequest(GetAllQuestionRequest, Context)
+}
+
+UserDao *-- User
+GetUserActivity *-- UserDao
+CreateUserActivity *-- UserDao
+UpdateUserActivity *-- UserDao
+
+RequestHandler <|.. CreateUserActivity
+RequestHandler <|.. GetUserActivity
+RequestHandler <|.. UpdateUserActivity
+
+JobApplicationDao *-- JobApplication
+CreateJobApplicationActivity *-- JobApplicationDao
+GetJobApplicationActivity *-- JobApplicationDao
+UpdateJobApplicationActivity *-- JobApplicationDao
+DeleteJobApplicationActivity *-- JobApplicationDao
+GetAllJobApplicationActivity *-- JobApplicationDao
+RequestHandler <|.. CreateJobApplicationActivity
+RequestHandler <|.. GetJobApplicationActivity
+RequestHandler <|.. UpdateJobApplicationActivity
+RequestHandler <|.. DeleteJobApplicationActivity
+RequestHandler <|.. GetAllJobApplicationActivity
+QuestionDao *-- Question
+CreateQuestionActivity *-- QuestionDao
+GetQuestionActivity *-- QuestionDao
+UpdateQuestionActivity *-- QuestionDao
+DeleteQuestionActivity *-- QuestionDao
+GetAllQuestionActivity *-- QuestionDao
+RequestHandler <|.. GetQuestionActivity
+RequestHandler <|.. UpdateQuestionActivity
+RequestHandler <|.. CreateQuestionActivity
+RequestHandler <|.. DeleteQuestionActivity
+RequestHandler <|.. GetAllQuestionActivity
+AddQuestionToJobApplication *-- JobApplicationDao
+AddQuestionToJobApplication *-- QuestionDao
+RequestHandler <|.. AddQuestionToJobApplication
+@enduml

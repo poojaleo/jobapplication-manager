@@ -1,0 +1,56 @@
+@startuml
+title Get Question
+
+actor User
+participant "API Gateway" as APIGateway
+participant Lambda
+participant GetQuestionActivity
+participant QuestionDao
+participant ModelConverter
+database DynamoDB
+
+User -> APIGateway : GET /users/{username}/questions/{questionId}
+activate User
+APIGateway -> Lambda
+activate Lambda
+Lambda -> GetQuestionActivity :  handleRequest(GetQuestionRequest, Context)
+activate GetQuestionActivity
+GetQuestionActivity -> QuestionDao : getQuestion(String, String)
+activate QuestionDao
+QuestionDao -> DynamoDB : load question by ID for that username
+activate DynamoDB
+
+'alt if user ID does not exist
+'    QuestionDao <-- DynamoDB : question.getUserId() == null
+'    Lambda <-- QuestionDao : throw UserNotFoundException
+'    APIGateway <-- Lambda
+'    User <-- APIGateway : 404 Response
+'else otherwise, continue
+'end
+
+'for the GetQuestionActivity, do we want to utilize UserDAO to throw UserNotFoundException
+' if the userId does not exist or just throw QuestionNotFoundException?
+
+alt if question ID does not exist
+    QuestionDao <-- DynamoDB : null
+    Lambda <-- QuestionDao : throw QuestionNotFoundException
+    APIGateway <-- Lambda
+    User <-- APIGateway : 404 Response
+else otherwise, continue
+end
+QuestionDao <-- DynamoDB : Question
+deactivate DynamoDB
+GetQuestionActivity <-- QuestionDao : Question
+deactivate QuestionDao
+GetQuestionActivity -> ModelConverter : toQuestionModel(Question)
+activate ModelConverter
+GetQuestionActivity <-- ModelConverter : QuestionModel
+deactivate ModelConverter
+Lambda <-- GetQuestionActivity : GetQuestionResult
+deactivate GetQuestionActivity
+APIGateway <-- Lambda
+deactivate Lambda
+User <-- APIGateway : 200 Response
+deactivate User
+
+@enduml

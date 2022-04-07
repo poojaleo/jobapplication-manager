@@ -1,0 +1,14 @@
+.signup-select {
+    border: 0;
+    background-color: #FFFFFF;
+    color: #565757;
+    margin-left: 25px;
+    padding: 5px 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.signup-select:hover {
+    color: #2ea2b1;
+    text-decoration-line: underline;
+}

@@ -1,0 +1,156 @@
+.jobs {
+    margin: 75px;
+    font-family: 'Cabin', 'Raleway', sans-serif;
+}
+
+.jobs h4 {
+    padding: 10px 20px;
+    font-style: italic;
+    color: var(--color-cadet-blue);
+}
+
+.jobsHeading {
+    display: flex;
+    justify-content: left;
+}
+
+.jobTopRow {
+    display: flex;
+    flex-direction: column;
+}
+
+.questionNav {
+    display: flex;
+    justify-content: center;
+}
+
+.questionNav h3 {
+    font-weight: bold;
+    color: #565757;
+    padding-top: 10px;
+}
+
+.createApp {
+    display: flex;
+    justify-content: right;
+}
+
+.jobsCreate {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.createButton.but {
+    border-radius: 1em;
+    background-color: #ee7836;
+    color: #FFFFFF;
+    font-weight: bold;
+    border: 2px solid #ee7836;
+    margin: 50px 0px 10px 50px;
+    padding: 0.01em 1em;
+}
+
+.applicationForm Button {
+    margin: 15px 75px;
+    background-color: var(--color-orange);
+    font-weight: normal;
+}
+
+.jobApplicationsTable .viewButton {
+    font-family: 'Raleway', sans-serif;
+    background-color: var(--color-cadet-blue);
+    border-color: var(--color-duck-blue);
+    color: var(--color-white);
+    border-radius: 1em;
+}
+
+.jobRows .viewButton:hover {
+    background-color: var(--color-orange);
+}
+
+.displayTable th {
+    color: var(--color-orange);
+}
+
+.questionsButton {
+    font-family: 'Cabin', 'Raleway', sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    color: #ee7836;
+    border: 2px solid #FFFFFF;
+    margin: 7px 7px 7px 200px;
+}
+
+.questionsButton:hover {
+    background-color: #FFFFFF;
+    color: #2ea2b1;
+    text-decoration-line: underline;
+}
+
+/*.jobApplicationsTable {*/
+/*    margin-left: 40px;*/
+/*    margin-right: 40px;*/
+/*}*/
+
+/*.jobApplicationsTable Table {*/
+/*    display: block;*/
+/*    height: 40vh;*/
+/*    overflow-y: scroll;*/
+/*    width: 160vh;*/
+/*}*/
+
+
+.appForm {
+    padding-top: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.applicationForm {
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+}
+
+.applicationForm input {
+    margin: 5px;
+    padding: 5px;
+}
+
+.displayTable {
+    overflow-y: scroll;
+    margin: 0px 0px 0px 80px;
+}
+
+.applicationForm .updateDeleteButton {
+    padding-top: 30px;
+}
+
+.updateDeleteButton {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.questionForm {
+    max-width: 500px;
+    height: auto;
+}
+
+.jobForm {
+    margin: 0px 200px 0px 50px;
+}
+
+.questionForm {
+    width: 400px;
+    margin-right: 160px;
+}
+
+
+.createBtn {
+    margin-right: 140px;
+}

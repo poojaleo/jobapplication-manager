@@ -1,0 +1,20 @@
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+}
+
+.logout {
+    border-radius: 1em;
+    background-color: #ee7836;
+    color: #FFFFFF;
+    font-weight: bold;
+    border: 2px solid #ee7836;
+    margin: 28px 7px 7px 7px;
+    padding: 0.2em 1em;
+}
+
+.logout:hover {
+    background-color: #2ea2b1;
+    color: #FFFFFF;
+    border: 2px solid #2ea2b1;
+}

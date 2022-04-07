@@ -1,0 +1,49 @@
+@startuml
+title Delete Question
+
+actor User
+participant "API Gateway" as APIGateway
+participant Lambda
+participant DeleteQuestionActivity
+participant QuestionDao
+participant ModelConverter
+database DynamoDB
+
+User -> APIGateway : DELETE /users/{username}/questions/{questionId}
+activate User
+APIGateway -> Lambda
+activate Lambda
+Lambda -> DeleteQuestionActivity :  handleRequest(DeleteQuestionRequest, Context)
+activate DeleteQuestionActivity
+'alt if invalid username provided
+'    Lambda <-- DeleteQuestionActivity : throw UserNotFoundException
+'    APIGateway <-- Lambda
+'    User <-- APIGateway : 404 Response
+'else otherwise, continue
+'end
+alt if question ID does not exist
+    Lambda <-- DeleteQuestionActivity : throw QuestionNotFoundException
+    APIGateway <-- Lambda
+    User <-- APIGateway : 404 Response
+else otherwise, continue
+end
+DeleteQuestionActivity -> QuestionDao : removeQuestion(String, String)
+activate QuestionDao
+QuestionDao -> DynamoDB : remove Question
+activate DynamoDB
+QuestionDao <-- DynamoDB
+deactivate DynamoDB
+DeleteQuestionActivity <-- QuestionDao
+deactivate QuestionDao
+DeleteQuestionActivity -> ModelConverter : toQuestionModel(Question)
+activate ModelConverter
+DeleteQuestionActivity <-- ModelConverter : QuestionModel
+deactivate ModelConverter
+Lambda <-- DeleteQuestionActivity : DeleteQuestionResult
+deactivate DeleteQuestionActivity
+APIGateway <-- Lambda
+deactivate Lambda
+User <-- APIGateway : 200 Response
+deactivate User
+
+@enduml

@@ -1,0 +1,42 @@
+@startuml
+entity User {
+  * username: String
+  --
+  * firstname : String
+  lastname : String
+  * emailAddress : String
+  * password : String
+}
+
+entity JobApplication {
+  * username : String
+  ..
+  * applicationId : String
+  --
+  * jobTitle: String
+  * company: String
+    location : String
+  * status: String (ENUM)
+    nextReminder: String
+    notes : String
+    jobUrlLink : String
+    questionsList : StringList (array of question id)
+}
+
+entity Question {
+  * username: String
+  ..
+  * questionId : String
+  --
+  * question: String
+   answer: String
+  * needsWork: Boolean
+    tags : StringList
+}
+
+
+
+User "1  " --o{ "0..*" JobApplication
+User "1" --|{ "1..*" Question
+
+@enduml

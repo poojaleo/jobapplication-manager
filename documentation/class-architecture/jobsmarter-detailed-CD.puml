@@ -1,0 +1,592 @@
+@startuml
+
+class User {
+- @DynamoDBHashKey username : string
+- firstname : String
+- lastname : String
+- emailAddress : String
+- password: String
+}
+
+class UserDao {
+- dynamoDbMapper : DynamoDBMapper
++ getUser(String) : User
++ saveUser(String) : User
+}
+
+class CreateUserActivity {
+- Logger log
+- UserDao userDao
++ handleRequest(CreateUserRequest, Context)
+}
+
+class CreateUserRequest {
+- username : String
+- firstname : String
+- lastname : String
+- emailAddress : String
+- password : String
++ String getFirstname()
++ void setFirstname(String)
++ String getLastname()
++ void setLastname(String)
++ String getEmailAddress()
++ void setEmailAddress(String)
++ String getPassword()
++ void setPassword(String)
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ Builder builder()
+}
+
+class GetUserActivity {
+- Logger log
+- UserDao userDao
++ handleRequest(GetUserRequest, Context)
+}
+
+class GetUserRequest {
+- String id
++ String getId()
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ Builder builder()
+}
+
+class UpdateUserActivity {
+- Logger log
+- UserDao userDao
++ handleRequest(UpdateUserRequest, Context)
+}
+
+class UpdateUserRequest {
+- String id
+- String firstname
+- String lastname
+- String password
++ String getId()
++ String getFirstname()
++ void setFirstname(String)
++ String getLastname()
++ void setLastname(String)
++ String getPassword()
++ void setPassword(String)
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ Builder builder()
+}
+
+enum Status {
+Interested,
+Applied,
+Reached Out,
+Interview,
+Offer,
+Not Moving Forward
+}
+
+class JobApplication {
+- @DynamoDBHashKey username : String
+- @DynamoDBRangeKey ApplicationId : String
+- jobTitle: String
+- company: String
+- location : String
+- status: String
+- nextReminder: String
+- notes : String
+- jobUrlLink : String
+- createdAt : String
+- questionsList : StringList
+}
+
+class JobApplicationDao {
+- dynamoDbMapper : DynamoDBMapper
++ getJobApplication(String, String) : JobApplication
++ saveJobApplication(JobApplication) : JobApplication
++ getAllJobApplications(String) : List<JobApplication>
+}
+
+class GetAllJobApplicationActivity {
+- Logger log
+- JobApplicationDao jobApplicationDao
++ handleRequest(GetAllJobApplicationRequest, Context)
+}
+
+class GetAllJobApplicationRequest {
+- username : String
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ {static} Builder builder()
+}
+
+class CreateJobApplicationActivity {
+- Logger log
+- JobApplicationDao jobApplicationDao
++ handleRequest(CreateJobApplicationRequest, Context)
+}
+
+class CreateJobApplicationRequest {
+- username : String
+- jobTitle: String
+- company: String
+- location : String
+- status: String
+- jobUrlLink : String
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ {static} Builder builder()
+}
+
+class GetJobApplicationActivity {
+- Logger log
+- JobApplicationDao jobApplicationDao
++ handleRequest(GetJobApplicationRequest, Context)
+}
+
+class GetJobApplicationRequest {
+- username : String
+- jobApplicationId : String
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ {static} Builder builder()
+}
+
+class UpdateJobApplicationActivity {
+- Logger log
+- JobApplicationDao jobApplicationDao
++ handleRequest(UpdateJobApplicationRequest, Context)
+}
+
+class UpdateJobApplicationRequest {
+- username : String
+- jobApplicationId : String
+- jobTitle: String
+- company: String
+- location : String
+- status: String
+- jobUrlLink : String
+- nextReminder: String
+- notes : String
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ {static} Builder builder()
+}
+
+class DeleteJobApplicationActivity {
+- Logger log
+- JobApplicationDao jobApplicationDao
++ handleRequest(DeleteJobApplicationRequest, Context)
+}
+
+class DeleteJobApplicationRequest {
+- username : String
+- jobApplicationId : String
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ {static} Builder builder()
+}
+
+class AddQuestionToJobApplicationActivity {
+- Logger log
+- JobApplicationDao jobApplicationDao
+- QuestionDao questionDao
++ handleRequest(AddQuestionToJobApplicationRequest, Context)
+}
+
+class AddQuestionToJobApplicationRequest {
+- username : String
+- jobApplicationId : String
+- questionId : String
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ {static} Builder builder()
+}
+
+interface RequestHandler {
+O handleRequest(I input, Context context)
+}
+
+class Question {
+- @DynamoDBHashKey username : String
+- @DynamoDBRangeKey questionId : String
+- question: String
+- answer: String
+- needsWork: Boolean
+- tags : StringList
+}
+
+class QuestionDao {
+- dynamoDbMapper : DynamoDBMapper
++ getQuestion(String, String) : Question
++ saveQuestion(String, String) : Question
++ getAllQuestions(String) : List<Question>
+}
+
+class CreateQuestionActivity {
+- Logger log
+- QuestionDao questionDao
++ handleRequest(CreateQuestionRequest, Context)
+}
+
+class CreateQuestionRequest {
+- username : String
+- question: String
+- answer: String
+- needsWork: Boolean
+- tags : StringList
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ {static} Builder builder()
+}
+
+class GetQuestionActivity {
+- Logger log
+- QuestionDao questionDao
++ handleRequest(GetQuestionRequest, Context)
+}
+
+class GetQuestionRequest {
+- username : String
+- questionId : String
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ {static} Builder builder()
+}
+
+class UpdateQuestionActivity {
+- Logger log
+- QuestionDao questionDao
++ handleRequest(UpdateQuestionRequest, Context)
+}
+
+class UpdateQuestionRequest {
+- username : String
+- questionId: String
+- question: String
+- answer: String
+- needsWork: Boolean
+- tags : StringList
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ {static} Builder builder()
+}
+
+class DeleteQuestionActivity {
+- Logger log
+- QuestionDao questionDao
++ handleRequest(DeleteQuestionRequest, Context)
+}
+
+class DeleteQuestionRequest {
+- username : String
+- questionId : String
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ {static} Builder builder()
+}
+
+class GetAllQuestionActivity {
+- Logger log
+- QuestionDao questionDao
++ handleRequest(GetAllQuestionRequest, Context)
+}
+
+class GetAllQuestionRequest {
+- username : String
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ {static} Builder builder()
+}
+
+UserDao *-- User
+GetUserActivity *-- UserDao
+CreateUserActivity *-- UserDao
+UpdateUserActivity *-- UserDao
+CreateUserActivity *-- CreateUserRequest
+GetUserActivity *-- GetUserRequest
+UpdateUserActivity *-- UpdateUserRequest
+RequestHandler <|.. CreateUserActivity
+RequestHandler <|.. GetUserActivity
+RequestHandler <|.. UpdateUserActivity
+JobApplication *-- Status
+JobApplicationDao *-- JobApplication
+CreateJobApplicationActivity *-- CreateJobApplicationRequest
+CreateJobApplicationActivity *-- JobApplicationDao
+GetJobApplicationActivity *-- GetJobApplicationRequest
+GetJobApplicationActivity *-- JobApplicationDao
+UpdateJobApplicationActivity *-- UpdateJobApplicationRequest
+UpdateJobApplicationActivity *-- JobApplicationDao
+DeleteJobApplicationActivity *-- DeleteJobApplicationRequest
+DeleteJobApplicationActivity *-- JobApplicationDao
+GetAllJobApplicationActivity *-- GetAllJobApplicationRequest
+GetAllJobApplicationActivity *-- JobApplicationDao
+RequestHandler <|.. CreateJobApplicationActivity
+RequestHandler <|.. GetJobApplicationActivity
+RequestHandler <|.. UpdateJobApplicationActivity
+RequestHandler <|.. DeleteJobApplicationActivity
+RequestHandler <|.. GetAllJobApplicationActivity
+QuestionDao *-- Question
+CreateQuestionActivity *-- CreateQuestionRequest
+CreateQuestionActivity *-- QuestionDao
+GetQuestionActivity *-- GetQuestionRequest
+GetQuestionActivity *-- QuestionDao
+UpdateQuestionActivity *-- QuestionDao
+DeleteQuestionActivity *-- QuestionDao
+GetAllQuestionActivity *-- QuestionDao
+UpdateQuestionActivity *-- UpdateQuestionRequest
+DeleteQuestionActivity *-- DeleteQuestionRequest
+GetAllQuestionActivity *-- GetAllQuestionRequest
+RequestHandler <|.. GetQuestionActivity
+RequestHandler <|.. UpdateQuestionActivity
+RequestHandler <|.. CreateQuestionActivity
+RequestHandler <|.. DeleteQuestionActivity
+RequestHandler <|.. GetAllQuestionActivity
+AddQuestionToJobApplicationActivity *-- JobApplicationDao
+AddQuestionToJobApplicationActivity *-- QuestionDao
+AddQuestionToJobApplicationActivity *-- AddQuestionToJobApplicationRequest
+RequestHandler <|.. AddQuestionToJobApplicationActivity
+
+
+
+newpage
+
+Title: Results
+
+class UserModel {
+- username : String
+- firstname : String
+- lastname : String
+- emailAddress : String
++ String getId()
++ void setId(String)
++ String getFirstname()
++ void setFirstname(String)
++ String getLastname()
++ void setLastname(String)
++ String getEmailAddress()
++ void setEmailAddress(String)
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ Builder builder()
+}
+
+
+class GetUserResponse {
+- UserModel user
++ UserModel getUser()
++ void setUser(UserModel)
++ {static} Builder builder()
+}
+
+
+class CreateUserResponse {
+- UserModel user
++ UserModel getUser()
++ void setUser(UserModel)
++ {static} Builder builder()
+}
+
+class UpdateUserResponse {
+- UserModel user
++ UserModel getUser()
++ void setUser(UserModel)
++ {static} Builder builder()
+}
+
+class JobApplicationModel {
+- username : String
+- applicationId : String
+- jobTitle: String
+- company: String
+- location : String
+- status: String
+- nextReminder: String
+- notes : String
+- jobUrlLink : String
+- createdAt : String
+- questionsList : StringList
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ Builder builder()
+}
+
+class CreateJobApplicationResponse {
+- JobApplicationModel jobApplicationModel
++ JobApplicationModel getJobApplication()
++ void setJobApplication(JobApplicationModel)
++ {static} Builder builder()
+}
+
+class GetJobApplicationResponse {
+- JobApplicationModel jobApplicationModel
++ JobApplicationModel getJobApplication()
++ void setJobApplication(JobApplicationModel)
++ {static} Builder builder()
+}
+class UpdateJobApplicationResponse {
+- JobApplicationModel jobApplicationModel
++ JobApplicationModel getJobApplication()
++ void setJobApplication(JobApplicationModel)
++ {static} Builder builder()
+}
+class DeleteJobApplicationResponse {
+- JobApplicationModel jobApplicationModel
++ JobApplicationModel getJobApplication()
++ void setJobApplication(JobApplicationModel)
++ {static} Builder builder()
+}
+class GetAllJobApplicationResponse {
+- JobApplicationModel jobApplicationModel
++ JobApplicationModel getJobApplication()
++ void setJobApplication(JobApplicationModel)
++ {static} Builder builder()
+}
+
+class AddQuestionToJobApplicationResponse {
+- JobApplicationModel jobApplicationModel
++ JobApplicationModel getJobApplication()
++ getQuestionList() : List<Question>
++ setQuestionList(List<Question>) : void
++ {static} Builder builder()
+}
+
+class QuestionModel {
+- username : String
+- questionId : String
+- question: String
+- answer: String
+- needsWork: Boolean
+- tags : StringList
++ boolean equals(Object)
++ int hashCode()
++ String toString()
++ Builder builder()
+}
+
+class GetQuestionResponse {
+- QuestionModel questionModel
++ QuestionModel getQuestion()
++ void setQuestion(QuestionModel)
++ {static} Builder builder()
+}
+class UpdateQuestionResponse {
+- QuestionModel questionModel
++ QuestionModel getQuestion()
++ void setQuestion(QuestionModel)
++ {static} Builder builder()
+}
+class CreateQuestionResponse {
+- QuestionModel questionModel
++ QuestionModel getQuestion()
++ void setQuestion(QuestionModel)
++ {static} Builder builder()
+}
+class DeleteQuestionResponse {
+- QuestionModel questionModel
++ QuestionModel getQuestion()
++ void setQuestion(QuestionModel)
++ {static} Builder builder()
+}
+class GetAllQuestionResponse {
+- QuestionModel questionModel
++ QuestionModel getQuestion()
++ void setQuestion(QuestionModel)
++ {static} Builder builder()
+}
+
+
+
+GetUserResponse *-- UserModel
+CreateUserResponse *-- UserModel
+UpdateUserResponse *-- UserModel
+CreateJobApplicationResponse *-- JobApplicationModel
+GetJobApplicationResponse *-- JobApplicationModel
+UpdateJobApplicationResponse *-- JobApplicationModel
+DeleteJobApplicationResponse *-- JobApplicationModel
+GetAllJobApplicationResponse *-- JobApplicationModel
+AddQuestionToJobApplicationResponse *-- JobApplicationModel
+GetQuestionResponse *-- QuestionModel
+UpdateQuestionResponse *-- QuestionModel
+CreateQuestionResponse *-- QuestionModel
+DeleteQuestionResponse *-- QuestionModel
+GetAllQuestionResponse *-- QuestionModel
+
+
+newpage
+
+Title: Exceptions
+class RuntimeException {
+
+}
+class UserNotFoundException {
+- {static} long serialVersionUID
+}
+class InvalidAttributeValueException {
+- {static} long serialVersionUID
+}
+
+class JobApplicationNotFoundException {
+- {static} long serialVersionUID
+}
+
+class QuestionNotFoundException {
+- {static} long serialVersionUID
+}
+
+class InvalidAttributeChangeException {
+- {static} long serialVersionUID
+}
+
+class InvalidAttributeException {
+- {static} long serialVersionUID
+}
+
+class InvalidPasswordException {
+- {static} long serialVersionUID
+}
+
+class UserAlreadyExistsException {
+- {static} long serialVersionUID
+}
+
+class QuestionAlreadyExistsException {
+- {static} long serialVersionUID
+}
+
+RuntimeException *-- UserNotFoundException
+RuntimeException *-- JobApplicationNotFoundException
+RuntimeException *-- QuestionNotFoundException
+RuntimeException *-- InvalidAttributeException
+RuntimeException *-- InvalidPasswordException
+RuntimeException *-- UserAlreadyExistsException
+RuntimeException *-- QuestionAlreadyExistsException
+InvalidAttributeException *-- InvalidAttributeChangeException
+InvalidAttributeException *-- InvalidAttributeValueException
+newpage
+
+Title: Utility
+
+class JobTrackerServiceUtils {
++ boolean isValidString(String)
++ boolean isValidEmailAddress(String)
++ boolean isValidPassword(String)
++ String generateId()
+}
+@enduml
+
