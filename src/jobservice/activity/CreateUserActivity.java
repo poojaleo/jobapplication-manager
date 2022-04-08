@@ -70,6 +70,8 @@ public class CreateUserActivity implements RequestHandler<CreateUserRequest, Cre
             throw new InvalidAttributeValueException(exception.getMessage());
         }
 
+        lambdaLogger.log("Validation complete.");
+
         User optionalUser = null;
         
         try {

@@ -1,4 +1,4 @@
-aws cloudformation create-stack --region us-west-2 --stack-name dynamodbtabledesign-userstable01 --template-body file://src/resources/cloudformation/dynamodbtabledesign/User.yaml --capabilities CAPABILITY_IAM
+aws cloudformation create-stack --region us-west-2 --stack-name dynamodbtabledesign-jobsmarteruserstable01 --template-body file://src/resources/cloudformation/dynamodbtabledesign/User.yaml --capabilities CAPABILITY_IAM
 
 aws cloudformation create-stack --region us-west-2 --stack-name dynamodbtabledesign-jobapplicationstable01 --template-body file://src/resources/cloudformation/dynamodbtabledesign/JobApplication.yaml --capabilities CAPABILITY_IAM
 
