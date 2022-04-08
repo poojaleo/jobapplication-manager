@@ -19,7 +19,7 @@ public class UserDao {
     }
 
     /**
-     *  Returns the {@link User} corresponding to the specified username.
+     * Returns the {@link User} corresponding to the specified username.
      * @param username username of the user
      * @return User object if found in the dynamoDb Table
      * @throws UserNotFoundException if user with corresponding username does not exist
