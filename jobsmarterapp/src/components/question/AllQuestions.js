@@ -6,7 +6,7 @@ import {Multiselect} from "multiselect-react-dropdown";
 import JobApplicationNavbar from "../NavBar/JobApplicationNavbar";
 
 let usernameToPass = "";
-const baseUrl = "https://7ehv0ovn6e.execute-api.us-west-2.amazonaws.com/prod";
+const baseUrl = "https://c2j0kz6ana.execute-api.us-west-2.amazonaws.com/prod";
 
 function JobApplicationClick(name) {
 

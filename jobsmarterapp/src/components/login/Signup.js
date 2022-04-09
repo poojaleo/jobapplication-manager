@@ -10,7 +10,7 @@ let email = "";
 let firstname = "";
 let lastname = "";
 let password = "";
-const baseUrl = "https://7ehv0ovn6e.execute-api.us-west-2.amazonaws.com/prod";
+const baseUrl = "https://c2j0kz6ana.execute-api.us-west-2.amazonaws.com/prod";
 
 function SignUpClick() {
     let navigate = useNavigate();

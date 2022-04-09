@@ -9,7 +9,7 @@ import {GoToSignUpPage} from "./GoToSignUpPage";
 
 let username = "";
 let password = "";
-const baseUrl = "https://7ehv0ovn6e.execute-api.us-west-2.amazonaws.com/prod";
+const baseUrl = "https://c2j0kz6ana.execute-api.us-west-2.amazonaws.com/prod";
 
 function SignInClick() {
     let navigate = useNavigate();
