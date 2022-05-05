@@ -95,7 +95,7 @@ JobSmarterService will also provide a web interface for users to manage their Jo
 A main page providing a list view of all of their JobApplications will let them create new JobApplications and separate pages for Questions to update
 and add Questions.
 
-![Class Diagram Overview](images/jobsmarter-overview-CD.png)
+![Class Diagram Overview](documentation/images/jobsmarter-overview-CD.png)
 
 # 6. API
 
@@ -146,7 +146,7 @@ StringList tags;
     * If password does not match for user, will throw a 
         `InvalidPasswordException`
 
-![Get User Endpoint SD](images/GetUserActivity-SD.png)
+![Get User Endpoint SD](documentation/images/GetUserActivity-SD.png)
 
 
 ### 6.3. Create User Endpoint
@@ -166,7 +166,7 @@ StringList tags;
     * If the password is invalid, will throw an
       `InvalidAttributeValueException`.
 
-![Create User Endpoint SD](images/CreateUserActivity-SD.png)
+![Create User Endpoint SD](documentation/images/CreateUserActivity-SD.png)
 
 ### 6.4. Update User Endpoint
 
@@ -182,7 +182,7 @@ StringList tags;
     * If the password is invalid, will throw an
       `InvalidAttributeValueException`.
 
-![Update User Endpoint SD](images/UpdateUserActivity-SD.png)
+![Update User Endpoint SD](documentation/images/UpdateUserActivity-SD.png)
 
 ### 6.5. Create Job Application Endpoint
 
@@ -190,7 +190,7 @@ StringList tags;
 - Accepts data to create a new job application with a given userId and name. Assigned a random unique applicationId by the JobSmarter service.
 - If name is not a valid string, throws an `InvalidAttributeValueException`
 
-![Create Job Application Endpoint SD](images/createJobApplication-SD.png)
+![Create Job Application Endpoint SD](documentation/images/createJobApplication-SD.png)
 
 ### 6.6. Update Job Application Endpoint
 
@@ -199,7 +199,7 @@ StringList tags;
 - If applicationId is not found, throws an `JobApplicationNotFoundException`
 - If updated name is not valid, throws an `InvalidAttributeValueException`
 
-![Update Job Application Endpoint SD](images/updateJobApplication-SD.png)
+![Update Job Application Endpoint SD](documentation/images/updateJobApplication-SD.png)
 
 ### 6.7 Get Job Application Endpoint
 
@@ -207,7 +207,7 @@ StringList tags;
 - Accepts a username and applicationId. Returns the application.
 - If applicationId is not found, throws an `JobApplicationNotFoundException`
 
-![Get Job Application Endpoint SD](images/getJobApplication-SD.png)
+![Get Job Application Endpoint SD](documentation/images/getJobApplication-SD.png)
 
 ### 6.8 Get All Job Applications
 
@@ -215,7 +215,7 @@ StringList tags;
 - Accepts a username. Returns list of all applications for that user.
 - If user does not have any applications, returns an empty list 
 
-![Get All Job Application Endpoint SD](images/getAllJobApplications-SD.png)
+![Get All Job Application Endpoint SD](documentation/images/getAllJobApplications-SD.png)
 
 ### 6.9 Delete Job Application Endpoint
 
@@ -223,7 +223,7 @@ StringList tags;
 - Accepts a username and applicationId. Deletes the JobApplication
 - If the specified JobApplication does not exist, throws `JobApplicationNotFoundException`
 
-![Delete Job Application Endpoint SD](images/deleteJobApplication-SD.png)
+![Delete Job Application Endpoint SD](documentation/images/deleteJobApplication-SD.png)
 
 ## 6.10 Get Question Endpoint
 
@@ -232,7 +232,7 @@ StringList tags;
     * If the given question ID is not found, will throw a
       `QuestionNotFoundException`
 
-![Get Question Endpoint SD](images/getQuestion-SD.png)
+![Get Question Endpoint SD](documentation/images/getQuestion-SD.png)
     
 ## 6.11 Create Question Endpoint
 
@@ -245,7 +245,7 @@ StringList tags;
     * If the question String contains any of the invalid characters, will throw an
       `InvalidAttributeValueException`.
 
-![Create Question Endpoint SD](images/createQuestion-SD.png)
+![Create Question Endpoint SD](documentation/images/createQuestion-SD.png)
 
 ## 6.12 Update Question Endpoint
 
@@ -258,7 +258,7 @@ StringList tags;
     * If the question tags contains invalid characters, will throw an
       `InvalidAttributeValueException`
 
-![Update Question Endpoint SD](images/updateQuestion-SD.png)
+![Update Question Endpoint SD](documentation/images/updateQuestion-SD.png)
 
 ## 6.13 Add Question to Job Application Endpoint
 
@@ -270,7 +270,7 @@ StringList tags;
     * If the given questionId does not exist for the userId, will throw an `QuestionNotFoundException`
 * By default, will insert the new question to the end of the list of questions
 
-![Add Question to Job Application Endpoint SD](images/addQuestionToJobApplication-SD.png)
+![Add Question to Job Application Endpoint SD](documentation/images/addQuestionToJobApplication-SD.png)
 
 ## 6.14. Get All Questions Endpoint
 
@@ -282,11 +282,11 @@ StringList tags;
 * If the username does not exist, will throw a `UserNotFoundException`
 * If the username is found, but contains no questions, will return an empty list
 
-![Get All Questions Endpoint SD](images/getAllQuestion-SD.png)
+![Get All Questions Endpoint SD](documentation/images/getAllQuestion-SD.png)
 
 # 7. Tables
 
-![ERD](images/jobsmarter-entity.png)
+![ERD](documentation/images/jobsmarter-entity.png)
 
 ### 7.1. `Users`
 
@@ -326,5 +326,5 @@ needsWork // boolean
 
 # 8. Pages
 
-![Mockup of our frontend design](images/jobsmarter-frontend-flow.png)
+![Mockup of our frontend design](documentation/images/jobsmarter-frontend-flow.png)
 
