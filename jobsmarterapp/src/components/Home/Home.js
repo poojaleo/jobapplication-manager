@@ -21,12 +21,15 @@ class Home extends React.Component {
                         <div className={"infosection"}>
                             <h4>
                                 Never lose track of your applications again</h4>
-                            <p>With JobSmarter, you can easily monitor the current state of all your job applications at a glance.
-                                JobSmarter also helps to organize and prepare for your interview by storing all your
-                                interview questions in one place.</p>
-                            <div className={"homeImage"}>
-                                <img src={jobhomepage} alt={"home page icon"}/>
+                            <div className={"d-flex flex-row justify-content-around"}>
+                                <p>With JobSmarter, you can easily monitor the current state of all your job applications at a glance.
+                                    JobSmarter also helps to organize and prepare for your interview by storing all your
+                                    interview questions in one place.</p>
+                                <div className={"homeImage"}>
+                                    <img src={jobhomepage} alt={"home page icon"}/>
+                                </div>
                             </div>
+
                         </div>
                     </div>
                 </div>

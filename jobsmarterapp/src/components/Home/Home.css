@@ -1,5 +1,5 @@
 .aboutus {
-    padding: 100px;
+    padding: 30px 75px 0px 75px;
     display: flex;
     flex-direction: column;
 }
@@ -27,7 +27,7 @@
 }
 
 .infosection {
-    margin-top: 125px;
+    margin-top: 50px;
     display: flex;
     flex-direction: column;
     font-size: 25px;
@@ -36,7 +36,7 @@
 }
 
 .home h4 {
-    padding: 30px 0px;
+    padding: 10px 0px;
     font-size: 50px;
     font-weight: lighter;
     font-family: 'Raleway', sans-serif;
@@ -50,6 +50,6 @@
 .homeImage img {
     float: right;
     margin-top: 0;
-    max-width: 100%;
+    max-width: 80%;
     height: auto;
 }

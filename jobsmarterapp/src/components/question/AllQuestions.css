@@ -1,10 +1,10 @@
 .interviewPrep {
-    margin: 75px;
+    margin: 15px 75px;
     font-family: 'Cabin', 'Raleway', sans-serif;
 }
 
 .questions h4 {
-    padding: 10px 20px;
+    padding: 0px 20px;
     font-style: italic;
     color: var(--color-cadet-blue);
 }

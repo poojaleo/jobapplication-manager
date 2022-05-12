@@ -1,17 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import {Button, Container, Form, Table, Input} from "reactstrap";
 import "./AllJobApplications.css";
 import "react-datepicker/dist/react-datepicker.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
-import {ErrorBoundary} from 'react-error-boundary'
 import {useNavigate} from "react-router-dom";
 import {Multiselect} from "multiselect-react-dropdown";
 import JobApplicationNavbar from "../NavBar/JobApplicationNavbar";
 
 let usernameToPass = "";
-const baseUrl = "https://c2j0kz6ana.execute-api.us-west-2.amazonaws.com/prod";
+const baseUrl = "https://x9zyk5z39b.execute-api.us-west-2.amazonaws.com/jobtracker";
 
 function QuestionClick(name) {
 
@@ -56,15 +55,6 @@ class AllJobApplications extends React.Component {
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleQuestionChangeAdded = this.handleQuestionChangeAdded.bind(this);
         this.handleQuestionChangeRemove = this.handleQuestionChangeRemove.bind(this);
-    }
-
-    aErrorHandler({error}) {
-        return (
-            <div role="alert">
-                <p>An error occurred:</p>
-                <pre>{error.message}</pre>
-            </div>
-        )
     }
 
     async componentDidMount() {
@@ -287,8 +277,6 @@ class AllJobApplications extends React.Component {
                         <div className={"questionForm"}>
 
                             <text>Questions</text>
-                            {/*<Input type={"text"} name={"questionsList"} defaultValue={application.questionsList}
-                                   onChange={this.onApplicationUpdateOrCreate}/>*/}
                             <div className={"checkboxQuestions"}>
                                 <Multiselect options={this.state.allQuestions} displayValue="question"
                                              selectedValues={this.state.selectedQuestions} showCheckbox={true} onSelect={this.handleQuestionChangeAdded}
@@ -328,8 +316,6 @@ class AllJobApplications extends React.Component {
                     </div>
                     <div className={"applicationForm"}>
                         <text>Reminder</text>
-                        {/*<Input type={"text"} name={"nextReminder"} defaultValue={application.nextReminder}
-                               onChange={this.onApplicationUpdateOrCreate}/>*/}
                         <DatePicker dateFormat="MM-dd-yyyy" selected = {selected} onChange={this.handleDateChange} />
 
                         <text>Job URL</text>
@@ -352,7 +338,6 @@ class AllJobApplications extends React.Component {
 
         return (
             <div className={"jobs"}>
-                <ErrorBoundary FallbackComponent={this.aErrorHandler}>
                 <JobApplicationNavbar />
 
                     <div className={"jobsHeading"}>
@@ -391,7 +376,6 @@ class AllJobApplications extends React.Component {
                 <div className={"jobForm"}>
                     {specificJobApplication(this.state.specificJobApplication)}
                 </div>
-                </ErrorBoundary>
             </div>
         )
     }

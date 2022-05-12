@@ -10,7 +10,7 @@ let email = "";
 let firstname = "";
 let lastname = "";
 let password = "";
-const baseUrl = "https://c2j0kz6ana.execute-api.us-west-2.amazonaws.com/prod";
+const baseUrl = "https://x9zyk5z39b.execute-api.us-west-2.amazonaws.com/jobtracker";
 
 function SignUpClick() {
     let navigate = useNavigate();
@@ -131,37 +131,43 @@ export function Signup() {
     return (
         <div className={"loginPage"}>
             <UserCreateNavbar />
-            <h3 className={"greeting"}>Sign up for JobSmarter</h3>
-            <Form className="form">
-                <FormGroup>
-                    <Label for="exampleUsername">Username*</Label>
-                    <Input type="text" name="username" id="exampleUsername" placeholder="Username" onChange={handleUsernameChange}/>
-                </FormGroup>
-                <FormGroup>
-                    <Label for="examplePassword">Password* (min. 8 characters, 1 uppercase, 1 lowercase and 1 special character)</Label>
-                    <Input type="password" name="password" id="examplePassword" placeholder="********" onChange={handlePasswordChange}/>
-                </FormGroup>
-                <FormGroup>
-                    <Label for="exampleFirstname">First Name*</Label>
-                    <Input type="text" name="email" id="exampleFirstname" placeholder="First Name" onChange={handleFirstnameChange}/>
-                </FormGroup>
-                <FormGroup>
-                    <Label for="exampleLastname">Last Name</Label>
-                    <Input type="text" name="firstname" id="exampleLastname" placeholder="Last Name" onChange={handleLastnameChange}/>
-                </FormGroup>
-                <FormGroup>
-                    <Label for="exampleEmail">Email*</Label>
-                    <Input type="text" name="lastname" id="exampleEmail" placeholder="Email Address" onChange={handleEmailChange}/>
-                </FormGroup>
+            <div className={"d-flex flex-row justify-content-around"}>
+                <div>
+                    <h3 className={"greeting"}>Sign up for JobSmarter</h3>
+                    <Form className="form">
+                        <FormGroup>
+                            <Label for="exampleUsername">Username*</Label>
+                            <Input type="text" name="username" id="exampleUsername" placeholder="Username" onChange={handleUsernameChange}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="examplePassword">Password* (min. 8 characters, 1 uppercase, 1 lowercase and 1 special character)</Label>
+                            <Input type="password" name="password" id="examplePassword" placeholder="********" onChange={handlePasswordChange}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="exampleFirstname">First Name*</Label>
+                            <Input type="text" name="email" id="exampleFirstname" placeholder="First Name" onChange={handleFirstnameChange}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="exampleLastname">Last Name</Label>
+                            <Input type="text" name="firstname" id="exampleLastname" placeholder="Last Name" onChange={handleLastnameChange}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="exampleEmail">Email*</Label>
+                            <Input type="text" name="lastname" id="exampleEmail" placeholder="Email Address" onChange={handleEmailChange}/>
+                        </FormGroup>
 
-                <div className={"button"}>
-                    <SignUpClick />
+                        <div className={"button"}>
+                            <SignUpClick />
+                        </div>
+                        <UpdateUserClick />
+                    </Form>
                 </div>
-                <UpdateUserClick />
-            </Form>
-            <div className={"homeImage"}>
-                <img src={jobhomepage} alt={"home page icon"}/>
+                <div className={"homeImage"}>
+                    <img src={jobhomepage} alt={"home page icon"}/>
+                </div>
             </div>
+
+
         </div>
     )
 }

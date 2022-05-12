@@ -1,10 +1,10 @@
 .jobs {
-    margin: 75px;
+    margin: 15px 75px 0px 75px;
     font-family: 'Cabin', 'Raleway', sans-serif;
 }
 
 .jobs h4 {
-    padding: 10px 20px;
+    padding: 0px 20px;
     font-style: italic;
     color: var(--color-cadet-blue);
 }
@@ -89,19 +89,6 @@
     color: #2ea2b1;
     text-decoration-line: underline;
 }
-
-/*.jobApplicationsTable {*/
-/*    margin-left: 40px;*/
-/*    margin-right: 40px;*/
-/*}*/
-
-/*.jobApplicationsTable Table {*/
-/*    display: block;*/
-/*    height: 40vh;*/
-/*    overflow-y: scroll;*/
-/*    width: 160vh;*/
-/*}*/
-
 
 .appForm {
     padding-top: 15px;

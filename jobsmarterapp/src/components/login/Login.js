@@ -9,7 +9,7 @@ import {GoToSignUpPage} from "./GoToSignUpPage";
 
 let username = "";
 let password = "";
-const baseUrl = "https://c2j0kz6ana.execute-api.us-west-2.amazonaws.com/prod";
+const baseUrl = "https://x9zyk5z39b.execute-api.us-west-2.amazonaws.com/jobtracker";
 
 function SignInClick() {
     let navigate = useNavigate();
@@ -65,28 +65,34 @@ export function Login() {
     return (
         <div className={"loginPage"}>
             <UserNavbar />
-            <h3 className={"greeting"}>WELCOME BACK!</h3>
-            <div className={"underscore"}>
-                <h5>Don't have an account.</h5>
-                <GoToSignUpPage />
-            </div>
-            <Form className="form">
-                <FormGroup>
-                    <Label for="exampleUsername">Username</Label>
-                    <Input className={"login-input"} type="text" name="username" id="exampleUsername" placeholder="Username" onChange={handleFormChange}/>
-                </FormGroup>
-                <FormGroup>
-                    <Label for="examplePassword">Password</Label>
-                    <Input className={"login-input"} type="password" name="password" id="examplePassword" placeholder="********" onChange={handlePasswordChange}/>
-                </FormGroup>
-                <SignInClick />
-                <div className={"button"}>
-                    <UpdateClick />
+            <div className={"d-flex flex-row"}>
+                <div>
+                    <h3 className={"greeting"}>WELCOME BACK!</h3>
+                    <div className={"underscore"}>
+                        <h5>Don't have an account.</h5>
+                        <GoToSignUpPage />
+                    </div>
+                    <Form className="form">
+                        <FormGroup>
+                            <Label for="exampleUsername">Username</Label>
+                            <Input className={"login-input"} type="text" name="username" id="exampleUsername" placeholder="Username" onChange={handleFormChange}/>
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="examplePassword">Password</Label>
+                            <Input className={"login-input"} type="password" name="password" id="examplePassword" placeholder="********" onChange={handlePasswordChange}/>
+                        </FormGroup>
+                        <SignInClick />
+                        <div className={"button"}>
+                            <UpdateClick />
+                        </div>
+                    </Form>
                 </div>
-            </Form>
-            <div className={"homeImage"}>
-                <img src={jobhomepage} alt={"home page icon"}/>
+                <div className={"homeImage"}>
+                    <img src={jobhomepage} alt={"home page icon"}/>
+                </div>
             </div>
+
+
         </div>
     )
 
