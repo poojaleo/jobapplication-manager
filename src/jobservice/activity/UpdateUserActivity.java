@@ -65,7 +65,7 @@ public class UpdateUserActivity implements RequestHandler<UpdateUserRequest, Upd
             throw userNotFoundException;
         }
 
-        if(updateUserRequest.getFirstname() != null && !updateUserRequest.getFirstname().equals("") && user.getFirstname() != updateUserRequest.getFirstname()) {
+        if(updateUserRequest.getFirstname() != null && !updateUserRequest.getFirstname().equals("") && !user.getFirstname().equals(updateUserRequest.getFirstname())) {
             try {
                 checkNameValidity(updateUserRequest.getFirstname());
             } catch (InvalidAttributeValueException exception) {
@@ -74,7 +74,7 @@ public class UpdateUserActivity implements RequestHandler<UpdateUserRequest, Upd
             user.setFirstname(updateUserRequest.getFirstname());
         }
         
-        if(updateUserRequest.getLastname() != null && !updateUserRequest.getLastname().equals("") && user.getLastname() != updateUserRequest.getLastname()) {
+        if(updateUserRequest.getLastname() != null && !updateUserRequest.getLastname().equals("") && !user.getLastname().equals(updateUserRequest.getLastname())) {
                 try {
                     checkNameValidity(updateUserRequest.getLastname());
                 } catch (InvalidAttributeValueException exception) {
@@ -83,11 +83,11 @@ public class UpdateUserActivity implements RequestHandler<UpdateUserRequest, Upd
             user.setLastname(updateUserRequest.getLastname());
         }
 
-        if(updateUserRequest.getEmailAddress() != null && !updateUserRequest.getEmailAddress().equals("") && user.getEmailAddress() != updateUserRequest.getEmailAddress()) {
+        if(updateUserRequest.getEmailAddress() != null && !updateUserRequest.getEmailAddress().equals("") && !user.getEmailAddress().equals(updateUserRequest.getEmailAddress())) {
             throw new InvalidAttributeChangeException("Email Address update is not allowed.");
         }
 
-        if(updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().equals("") && user.getPassword() != updateUserRequest.getPassword()) {
+        if(updateUserRequest.getPassword() != null && !updateUserRequest.getPassword().equals("") && !user.getPassword().equals(updateUserRequest.getPassword())) {
             try {
                 checkPasswordValidity(updateUserRequest.getPassword());
             } catch (InvalidAttributeValueException exception) {

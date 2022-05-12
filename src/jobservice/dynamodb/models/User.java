@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Represents a record in the users table.
  */
-@DynamoDBTable(tableName = "JobsmarterUsers")
+@DynamoDBTable(tableName = "JobSmarterUsers")
 public class User {
     private String username;
     private String firstname;

@@ -5,3 +5,5 @@ aws cloudformation create-stack --region us-west-2 --stack-name dynamodbtabledes
 aws cloudformation create-stack --region us-west-2 --stack-name dynamodbtabledesign-questionstable01 --template-body file://src/resources/cloudformation/dynamodbtabledesign/Question.yaml --capabilities CAPABILITY_IAM
 
 aws cloudformation update-stack --region us-west-2 --stack-name dynamodbtabledesign-questionstable01 --template-body file://src/resources/cloudformation/dynamodbtabledesign/Question.yaml --capabilities CAPABILITY_IAM
+
+src/resources/cloudformation/dynamodbtabledesign/User.yaml

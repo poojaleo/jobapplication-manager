@@ -1,5 +1,5 @@
 Resources:
-  JobsmarterUsersTable:
+  JobSmarterUsersTable:
     Type: AWS::DynamoDB::Table
     Properties:
       AttributeDefinitions:
@@ -9,4 +9,4 @@ Resources:
         - AttributeName: "username"
           KeyType: "HASH"
       BillingMode: PAY_PER_REQUEST
-      TableName: "JobsmarterUsers"
+      TableName: "JobSmarterUsers"
