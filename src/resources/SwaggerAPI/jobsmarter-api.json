@@ -310,7 +310,7 @@
         }
       }
     },
-    "/user/{username}/jobapplications/{applicationId}": {
+    "/users/{username}/jobapplications/{applicationId}": {
       "get": {
         "summary": "get specific job application",
         "description": "get job application details for specific applicationId for specified username",
