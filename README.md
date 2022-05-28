@@ -4,7 +4,7 @@ JobSmarter is an effective way to manage all your job applications at one place.
 
 ### Live Project Preview:
 
-[Job Tracker Application](https://main.d17vxbprzqh5g3.amplifyapp.com/)
+[JobSmarter Application](https://main.d17vxbprzqh5g3.amplifyapp.com/)
 
 #### For Testing, You can use dummy account to login
     Username: jimhalpert
@@ -14,7 +14,7 @@ JobSmarter is an effective way to manage all your job applications at one place.
 * Java, DynamoDB, AWS S3, AWS Lambda, AWS API Gateway, React, Bootstrap, AWS Amplify (for hosting)
 
 ## API Documentation
-[Job Tracker API Documentation](http://jobtracker-swagger-html.s3-website-us-west-2.amazonaws.com/#get-/users/-username-)
+[JobSmarter API Documentation](http://jobtracker-swagger-html.s3-website-us-west-2.amazonaws.com/#get-/users/-username-)
 
 ## JobSmarter Design Document
 
