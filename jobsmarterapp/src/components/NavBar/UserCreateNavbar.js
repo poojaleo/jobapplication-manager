@@ -7,12 +7,8 @@ class UserCreateNavbar extends React.Component {
     render() {
         return (
             <div className={"user"}>
-                <div className={"user top-bar"}>
-                    <a href="/home">
-                        <h5>Home</h5>
-                    </a>
-                    <h5>About Us</h5>
-                    <div className={"user user-select"}>
+                <div className={"d-flex flex-row justify-content-end"}>
+                    <div className={"mt-2"}>
                         <GoToLoginPage />
                     </div>
                     <a href="/home">

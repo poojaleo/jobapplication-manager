@@ -1,0 +1,14 @@
+.noAccount {
+    padding: 1em;
+}
+
+.btn-primary {
+    background-color: var(--color-orange) !important;
+    border-radius: 1em;
+    color: #FFFFFF !important;
+    font-weight: bold;
+    padding: 0.2em 12em;
+    border: 2px solid #ee7836;
+    text-align: center;
+
+}

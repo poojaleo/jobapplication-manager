@@ -1,49 +1,46 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import jobsmarterLogo from "../Home/jobsmarter_logo.png";
 import "./JobApplicationNavbar.css";
+import AuthService from "../services/AuthService";
+import SignoutButton from "../login/SignoutButton";
+import QuestionsButton from "../login/QuestionsButton";
 
+const JobApplicationNavbar = () => {
+        const [username, setUsername] = useState('');
 
-// let usernameToPass = "";
-//
-// function QuestionClick(name) {
-//
-//     let navigate = useNavigate();
-//     const routeChange = (event) => {
-//         event.preventDefault();
-//         navigate('/questions', {
-//             state:{username:GetNameForNavbar.username}
-//         });
-//     }
-//     return <button onClick={routeChange} className={"questionsButton"}>Interview Preparation</button>
-// }
+        useEffect(() => {
+            setUsername(AuthService.getCurrentUsername);
+        }, []);
 
-class JobApplicationNavbar extends React.Component {
-
-    // constructor(props) {
-    //     super(props);
-    //
-    //     this.state = {
-    //         username: this.props.username,
-    //     }
-    //
-    //     usernameToPass = this.state.username;
-    // }
-
-    render() {
         return (
             <div className={"top-bar"}>
-                <a href="/home">
-                    <div className={"logo"}>
-                        <img src={jobsmarterLogo} alt={"company logo"}/>
+                <div className={"d-flex flex-row"}>
+                    <a href="/home">
+                        <div className={"logo"}>
+                            <img src={jobsmarterLogo} alt={"company logo"}/>
+                        </div>
+                    </a>
+                    <div className={"mt-3"}>
+                        <h4>Hi {username}</h4>
                     </div>
-                </a>
-                {/*<QuestionClick />*/}
-                <a href="/home">
-                    <button className={"logout"}>Log Out</button>
-                </a>
+
+                </div>
+                <div className={"mt-3"}>
+                    <h3 className="fw-bold">Job Applications</h3>
+                </div>
+                <div className={"d-flex flex-column justify-content-end align-content-end"}>
+
+                   <div>
+                       <SignoutButton />
+                   </div>
+                    <div className={"mt-3"}>
+                        <QuestionsButton />
+                    </div>
+
+                </div>
+
             </div>
         );
-    }
 }
 
 export default JobApplicationNavbar;

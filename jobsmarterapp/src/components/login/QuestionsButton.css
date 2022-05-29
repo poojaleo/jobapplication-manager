@@ -1,0 +1,9 @@
+.questionsButton {
+    font-family: 'Cabin', 'Raleway', sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    background-color: #FFFFFF;
+    color: #ee7836;
+    border: 2px solid #FFFFFF;
+
+}
