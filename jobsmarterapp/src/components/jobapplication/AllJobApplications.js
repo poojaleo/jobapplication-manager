@@ -1,45 +1,34 @@
 import React from "react";
-import {Button, Container, Form, Table, Input} from "reactstrap";
+import {Button, Table} from "reactstrap";
 import "./AllJobApplications.css";
 import "react-datepicker/dist/react-datepicker.css";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import moment from "moment";
-import {useNavigate} from "react-router-dom";
-import {Multiselect} from "multiselect-react-dropdown";
 import JobApplicationNavbar from "../NavBar/JobApplicationNavbar";
+import AuthService from "../services/AuthService";
+import CreateJobApplicationModal from "./CreateJobApplicationModal";
+import './AllJobApplications.css';
+import UpdateJobApplicationModal from "./UpdateJobApplicationModal";
 
 let usernameToPass = "";
 const baseUrl = "https://x9zyk5z39b.execute-api.us-west-2.amazonaws.com/jobtracker";
 
-function QuestionClick(name) {
-
-    let navigate = useNavigate();
-    const routeChange = (event) => {
-        event.preventDefault();
-        navigate('/questions', {
-            state:{username:usernameToPass}
-        });
-    }
-    return <button onClick={routeChange} className={"questionsButton"}>Interview Preparation</button>
-}
-
 class AllJobApplications extends React.Component {
-
     constructor(props) {
         super(props);
 
         this.state = {
-            username: this.props.username,
+            username: '',
             applicationLoaded: false,
             isCreate: true,
             allQuestions: [],
             selectedQuestions: [],
             allJobApplications : [],
-            specificJobApplication: {"username":this.props.username,"applicationId":"","jobTitle":"",
+            createModal : false,
+            updateModal: false,
+            specificJobApplication: {"username":"","applicationId":"","jobTitle":"",
                 "company":"","location":"","status":"", "nextReminder":"", "jobUrlLink": "",
                 "notes": "" ,"questionsList":[]},
-            emptyJobApplication: {"username":this.props.username,"applicationId":"","jobTitle":"",
+            emptyJobApplication: {"username":"","applicationId":"","jobTitle":"",
                 "company":"","location":"","status":"", "nextReminder":"", "jobUrlLink": "",
                 "notes": "" ,"questionsList":[""]},
             questionsList: {"username":"","questionId":"","question":"",
@@ -48,28 +37,68 @@ class AllJobApplications extends React.Component {
 
         usernameToPass = this.state.username;
 
-        this.viewApplication = this.viewApplication.bind(this);
         this.clickOnCreateApplication = this.clickOnCreateApplication.bind(this);
         this.onApplicationUpdateOrCreate = this.onApplicationUpdateOrCreate.bind(this);
+        this.componentDidMount = this.componentDidMount.bind(this);
+        this.openUpdateApplicationModal = this.openUpdateApplicationModal.bind(this);
+        this.updateQuestionsList = this.updateQuestionsList.bind(this);
+       /*
         this.createApplication = this.createApplication.bind(this);
-        this.handleDateChange = this.handleDateChange.bind(this);
         this.handleQuestionChangeAdded = this.handleQuestionChangeAdded.bind(this);
         this.handleQuestionChangeRemove = this.handleQuestionChangeRemove.bind(this);
+        */
     }
 
     async componentDidMount() {
+        const user = AuthService.getCurrentUsername();
+        this.setState({username : user});
+
         console.log("Getting applications")
-        const applicationsResponse = await fetch(`${baseUrl}/users/${this.state.username}/jobapplications`);
+        const applicationsResponse = await fetch(`${baseUrl}/users/${user}/jobapplications`);
         const applicationsBody = await applicationsResponse.json();
 
-        const questionsResponse = await fetch(`${baseUrl}/users/${this.state.username}/questions`);
+        const questionsResponse = await fetch(`${baseUrl}/users/${user}/questions`);
         const questionsBody = await questionsResponse.json();
         this.setState({allJobApplications : applicationsBody.jobApplicationList, allQuestions: questionsBody.questions});
     }
 
-    clickOnCreateApplication() {
+    clickOnCreateApplication(event) {
+        event.preventDefault();
         const application = this.state.emptyJobApplication;
-        this.setState({isCreate: true, applicationLoaded: false, specificJobApplication : application});
+        this.setState({isCreate: true, applicationLoaded: false, specificJobApplication : application,
+            createModal: true});
+    }
+
+    openUpdateApplicationModal(event, applicationId, jobTitle, company, location, status, nextReminder, jobUrlLink, notes, questionsList) {
+        event.preventDefault();
+        let itemChange = {...this.state.specificJobApplication};
+        itemChange["username"] = AuthService.getCurrentUsername();
+        itemChange["applicationId"] = applicationId;
+        itemChange["jobTitle"] = jobTitle;
+        itemChange["company"] = company;
+        itemChange["location"] = location;
+        itemChange["status"] = status;
+        itemChange["nextReminder"] = nextReminder;
+        itemChange["jobUrlLink"] = jobUrlLink;
+        itemChange["notes"] = notes;
+        itemChange["questionsList"] = questionsList;
+        if(itemChange["questionsList"] == undefined) {
+            itemChange["questionsList"] = new Array();
+        }
+
+        this.setState({specificJobApplication : itemChange, applicationLoaded: true, isCreate: false})
+
+        let fullQuestionsList = this.state.allQuestions;
+        let questionsToKeepOnlyId = itemChange["questionsList"];
+
+        let newList = fullQuestionsList.filter(ques => {
+            return questionsToKeepOnlyId.includes(ques.questionId);
+        })
+
+        this.setState({selectedQuestions : newList});
+        console.log(this.state.specificJobApplication);
+        console.log(this.state.selectedQuestions);
+        this.setState({updateModal : true})
     }
 
     async onApplicationUpdateOrCreate(event) {
@@ -83,34 +112,8 @@ class AllJobApplications extends React.Component {
 
     }
 
-    async handleDateChange(date) {
-        let itemChange = {...this.state.specificJobApplication};
-        itemChange["nextReminder"] = date;
-        this.setState({specificJobApplication : itemChange});
-    }
 
-    async handleQuestionChangeAdded(selectedList, selectedItem) {
-        let itemChange = {...this.state.specificJobApplication};
-        itemChange["questionsList"].push(selectedItem["questionId"]);
-        this.setState({specificJobApplication : itemChange});
-    }
-
-    async handleQuestionChangeRemove(selectedList, removedItem) {
-        let itemChange = {...this.state.specificJobApplication};
-        let list = itemChange["questionsList"];
-        let listAfterRemove = list.filter(element => {
-            return element != removedItem.questionId;
-        });
-        itemChange["questionsList"] = listAfterRemove;
-        this.setState({specificJobApplication : itemChange});
-    }
-
-
-    async viewApplication(id) {
-
-        const applicationResponse = await fetch(`${baseUrl}/users/${this.state.username}/jobapplications/${id}`);
-        const applicationBody = await applicationResponse.json();
-        this.setState({specificJobApplication : applicationBody.jobApplicationModel, applicationLoaded: true, isCreate: false})
+    async updateQuestionsList() {
         let itemChange = {...this.state.specificJobApplication};
         if(itemChange["questionsList"] == undefined) {
             itemChange["questionsList"] = new Array();
@@ -126,100 +129,35 @@ class AllJobApplications extends React.Component {
         })
 
         this.setState({selectedQuestions : newList});
-
+        await console.log(this.state.specificJobApplication);
     }
 
-    async createApplication(event) {
-        event.preventDefault();
-        console.log("Creating Application....")
 
-        const applicationToCreate = {
-            "jobTitle": this.state.specificJobApplication.jobTitle,
-            "company": this.state.specificJobApplication.company,
-            "location": this.state.specificJobApplication.location,
-            "status": this.state.specificJobApplication.status,
-            "nextReminder": this.state.specificJobApplication.nextReminder,
-            "jobUrlLink": this.state.specificJobApplication.jobUrlLink,
-            "notes": this.state.specificJobApplication.notes
-        }
-
-        const response = await fetch(`${baseUrl}/users/${this.state.username}/jobapplications/`, {
-            method: 'POST',
-            headers : {
-                'Accept' : 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body : JSON.stringify(applicationToCreate)
-        });
-
-        const content = await response.json();
-        console.log(content);
-        window.location.reload(false, {
-            state:{username:this.state.username}
-        });
-    }
-
-    async updateApplication(event) {
-        event.preventDefault();
-        console.log("Updating Application....")
-
-        const applicationToUpdate = {
-            "jobTitle": this.state.specificJobApplication.jobTitle,
-            "company": this.state.specificJobApplication.company,
-            "location": this.state.specificJobApplication.location,
-            "status": this.state.specificJobApplication.status,
-            "nextReminder": this.state.specificJobApplication.nextReminder,
-            "jobUrlLink": this.state.specificJobApplication.jobUrlLink,
-            "notes": this.state.specificJobApplication.notes,
-            "questionsList": this.state.specificJobApplication.questionsList
-        }
-
-        const response = await fetch(`${baseUrl}/users/${this.state.username}/jobapplications/${this.state.specificJobApplication.applicationId}`, {
-            method: 'PUT',
-            headers : {
-                'Accept' : 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body : JSON.stringify(applicationToUpdate)
-        });
-
-        const content = await response.json();
-        console.log(content);
-        window.location.reload(false, {
-            state:{username:this.state.username}
-        });
-
-    }
-
-    async deleteApplication(event) {
-        event.preventDefault();
+    async deleteApplication(id) {
         console.log("Deleting Application....")
 
 
-        const response = await fetch(`${baseUrl}/users/${this.state.username}/jobapplications/${this.state.specificJobApplication.applicationId}`, {
+        const response = await fetch(`${baseUrl}/users/${this.state.username}/jobapplications/${id}`, {
             method: 'DELETE'
         });
 
         const content = await response.json();
         console.log(content);
-        window.location.reload(false, {
-            state:{username:this.state.username}
-        });
+        window.location.reload();
     }
 
     render() {
-        const username = this.props.username;
+
         const allJobApplication = this.state.allJobApplications;
-        const allQuestions = this.state.allQuestions;
-        const selected = Date.parse(moment(this.state.specificJobApplication.nextReminder, 'MM-dd-yyyy').toISOString());
-        let questionsList = allQuestions?.map(question => {
+       /* const allQuestions = this.state.allQuestions;*/
+        /*let questionsList = allQuestions?.map(question => {
             return (
                 <div>
                     <input type={"checkbox"} id={question.questionId} key={question.questionId}/>
                     <label form={question.questionId}>{question.question}</label>
                 </div>
             )
-        })
+        })*/
 
         let jobApplicationRows = allJobApplication?.map((application) => {
                 return (
@@ -229,133 +167,28 @@ class AllJobApplications extends React.Component {
                         <td>{application.location}</td>
                         <td>{application.status}</td>
                         <td>{application.nextReminder}</td>
-                        <td><Button className={"viewButton"} size={"sm"} onClick={() => this.viewApplication(application.applicationId)}>View Application</Button></td>
+                        <td><Button className={"viewButton"} size={"sm"}
+                                    onClick={(event) =>
+                                        this.openUpdateApplicationModal(event, application["applicationId"],
+                                            application["jobTitle"], application["company"], application["location"],
+                                            application["status"], application["nextReminder"], application["jobUrlLink"],
+                                            application["notes"], application["questionsList"])}>View Application</Button></td>
+                        <td><Button className={"deleteButton"} size={"sm"} color={"danger"} onClick={() => this.deleteApplication(application.applicationId)}>Delete Application</Button></td>
                     </tr>
                 )
         })
 
-        let specificJobApplication = (application) => {
-            if(!this.state.isCreate) {
-                return (
-                    <Form className={"appForm"}>
-                        <div className={"applicationForm"}>
-                            <text>ApplicationId</text>
-                            <Input type={"text"} name={"applicationId"} value={application.applicationId}/>
-                            <text>Job Title</text>
-                            <Input type={"text"} name={"jobTitle"} defaultValue={application.jobTitle} required={true}
-                                   onChange={this.onApplicationUpdateOrCreate}/>
-                            <text>Company</text>
-                            <Input type={"text"} name={"company"} defaultValue={application.company} required={true}
-                                   onChange={this.onApplicationUpdateOrCreate}/>
-                            <text>Location</text>
-                            <Input type={"text"} name={"location"} defaultValue={application.location} required={true}
-                                   onChange={this.onApplicationUpdateOrCreate}/>
-
-                        </div>
-                        <div className={"applicationForm"}>
-                            <text>Status</text>
-                            <Input type={"select"} name={"status"} defaultValue={application.status} required={true}
-                                   onChange={this.onApplicationUpdateOrCreate}>
-                                <option>INTERESTED</option>
-                                <option>APPLIED</option>
-                                <option>CONTACTED</option>
-                                <option>INTERVIEW_SCHEDULED</option>
-                                <option>OFFER</option>
-                                <option>NOT_MOVING_FORWARD</option>
-                            </Input>
-                            <text>Reminder</text>
-                            {/*<Input type={"text"} name={"nextReminder"} defaultValue={application.nextReminder}
-                                   onChange={this.onApplicationUpdateOrCreate}/>*/}
-                            <DatePicker dateFormat="MM-dd-yyyy" selected = {selected} onChange={this.handleDateChange} />
-                            <text>Job URL</text>
-                            <Input type={"text"} name={"jobUrlLink"} defaultValue={application.jobUrlLink}
-                                   onChange={this.onApplicationUpdateOrCreate}/>
-                            <text>Notes</text>
-                            <Input type={"text"} name={"notes"} defaultValue={application.notes}
-                                   onChange={this.onApplicationUpdateOrCreate}/>
-                        </div>
-                        <div className={"questionForm"}>
-
-                            <text>Questions</text>
-                            <div className={"checkboxQuestions"}>
-                                <Multiselect options={this.state.allQuestions} displayValue="question"
-                                             selectedValues={this.state.selectedQuestions} showCheckbox={true} onSelect={this.handleQuestionChangeAdded}
-                                             onRemove={this.handleQuestionChangeRemove}/>
-                            </div>
-                            <div className={"updateDeleteButton"}>
-                                <Button className={"createButton but"} size={"md"}  onClick={(event) => this.updateApplication(event)}>UPDATE</Button>{' '}
-                                <Button className={"createButton but"} size={"md"}  onClick={(event) => this.deleteApplication(event)}>DELETE</Button>
-                            </div>
-                        </div>
-                    </Form>
-                )
-            }
-
-            return (
-                <Form className={"appForm"} >
-                    <div className={"applicationForm"}>
-                        <text>Job Title</text>
-                        <Input type={"text"} name={"jobTitle"} defaultValue={application.jobTitle} required={true}
-                               onChange={this.onApplicationUpdateOrCreate} />
-                        <text>Company</text>
-                        <Input type={"text"} name={"company"} defaultValue={application.company} required={true}
-                            onChange={this.onApplicationUpdateOrCreate}/>
-                        <text>Location</text>
-                        <Input type={"text"} name={"location"} defaultValue={application.location} required={true}
-                               onChange={this.onApplicationUpdateOrCreate}/>
-                        <text>Status</text>
-                        <Input type={"select"} name={"status"} defaultValue={application.status} required={true}
-                               onChange={this.onApplicationUpdateOrCreate}>
-                            <option>INTERESTED</option>
-                            <option>APPLIED</option>
-                            <option>CONTACTED</option>
-                            <option>INTERVIEW_SCHEDULED</option>
-                            <option>OFFER</option>
-                            <option>NOT_MOVING_FORWARD</option>
-                        </Input>
-                    </div>
-                    <div className={"applicationForm"}>
-                        <text>Reminder</text>
-                        <DatePicker dateFormat="MM-dd-yyyy" selected = {selected} onChange={this.handleDateChange} />
-
-                        <text>Job URL</text>
-                        <Input type={"text"} name={"jobUrlLink"} defaultValue={application.jobUrlLink}
-                               onChange={this.onApplicationUpdateOrCreate}/>
-                        <text>Notes</text>
-                        <Input type={"text"} name={"notes"} defaultValue={application.notes}
-                               onChange={this.onApplicationUpdateOrCreate}></Input>
-                    </div>
-                    <div className={"applicationForm createBtn"}>
-                        <div>
-                            <br />
-                            <br />
-                            <Button block size={"lg"} className={"createButton but"} onClick={(event) => this.createApplication(event)}>Create Application</Button>
-                        </div>
-                    </div>
-                </Form>
-            )
-        }
-
         return (
             <div className={"jobs"}>
                 <JobApplicationNavbar />
-
-                    <div className={"jobsHeading"}>
-                        <h4> Hi {username}</h4>
-                    </div>
                     <div className={"jobsCreate"}>
-                        <div className={"jobTopRow"}>
-                            <div className={"questionNav"}>
-                                <h3>Job Applications</h3>
-                                <QuestionClick />
-                            </div>
                             <div className={"createApp"}>
-                                <Button className={"createButton but"} size={"lg"} onClick={() => this.clickOnCreateApplication()}>Create Application</Button>
+                                <Button className={"createButton but"} size={"lg"}
+                                        onClick={event => this.clickOnCreateApplication(event)}>Create Application</Button>
                             </div>
-                        </div>
 
                         <div className={"jobApplicationsTable"}>
-                            <Table className={"displayTable"}  >
+                            <Table className={"displayTable px-4"} >
                                 <thead >
                                 <tr>
                                     <th width={"20%"}>Job Title</th>
@@ -373,9 +206,18 @@ class AllJobApplications extends React.Component {
                             </Table>
                         </div>
                 </div>
-                <div className={"jobForm"}>
-                    {specificJobApplication(this.state.specificJobApplication)}
-                </div>
+                {CreateJobApplicationModal(this.state.createModal,
+                    ()=>this.setState({createModal : false}), this.state.specificJobApplication.jobTitle,
+                    this.state.specificJobApplication.company, this.state.specificJobApplication.location,
+                    this.state.specificJobApplication.status, this.state.specificJobApplication.nextReminder,
+                    this.state.specificJobApplication.jobUrlLink, this.state.specificJobApplication.notes)}
+                {UpdateJobApplicationModal(this.state.updateModal, ()=>this.setState({updateModal : false}),
+                    this.state.specificJobApplication.applicationId, this.state.specificJobApplication.jobTitle,
+                    this.state.specificJobApplication.company, this.state.specificJobApplication.location,
+                    this.state.specificJobApplication.status, this.state.specificJobApplication.nextReminder,
+                    this.state.specificJobApplication.jobUrlLink, this.state.specificJobApplication.notes,
+                    this.state.specificJobApplication.questionsList, this.state.allQuestions,
+                    this.state.selectedQuestions)}
             </div>
         )
     }

@@ -1,12 +1,12 @@
 .loginPage {
    font-family: 'Raleway', sans-serif;
-   padding: 100px;
+   padding-top: 20px;
 }
 
 .greeting {
    display: flex;
    justify-content: left;
-   margin-top: 50px;
+   margin-top: 20px;
    font-weight: bold;
 }
 
@@ -21,7 +21,7 @@
 }
 
 .form {
-   font-family: 'Cabin', sans-serif;
+   font-family: 'Raleway', sans-serif;
    font-weight: bold;
    font-size: 18px;
    margin: 50px 0px;
@@ -52,8 +52,9 @@
    color: #FFFFFF;
    font-weight: bold;
    border: 2px solid #ee7836;
-   margin: 28px 7px 7px 7px;
-   padding: 0.2em 9.6em;
+   text-align: center;
+   text-decoration: none;
+   padding: 5px 20px;
 }
 
 .updateClick {

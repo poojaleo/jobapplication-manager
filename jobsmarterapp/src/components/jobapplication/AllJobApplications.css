@@ -32,7 +32,7 @@
 
 .createApp {
     display: flex;
-    justify-content: right;
+    justify-content: left;
 }
 
 .jobsCreate {
@@ -57,6 +57,12 @@
     background-color: var(--color-orange);
     font-weight: normal;
 }
+.jobApplicationsTable {
+    width: 80vw;
+    margin-top: 25px;
+    display: block;
+}
+
 
 .jobApplicationsTable .viewButton {
     font-family: 'Raleway', sans-serif;
@@ -66,9 +72,22 @@
     border-radius: 1em;
 }
 
+
 .jobRows .viewButton:hover {
     background-color: var(--color-orange);
 }
+
+.jobApplicationsTable .deleteButton {
+    font-family: 'Raleway', sans-serif;
+    border-color: red;
+    border-radius: 1em;
+}
+
+.jobApplicationsTable .deleteButton:hover {
+    background-color: red;
+    color: white;
+}
+
 
 .displayTable th {
     color: var(--color-orange);
