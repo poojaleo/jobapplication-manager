@@ -51,13 +51,6 @@ const UpdateJobApplicationModal = (show, handleClose, applicationId, jobTitle, c
     }
 
     const handleQuestionChangeRemove = (selectedList, removedItem) => {
-        /*let itemChange = {...this.state.specificJobApplication};
-        let list = itemChange["questionsList"];
-        let listAfterRemove = list.filter(element => {
-            return element != removedItem.questionId;
-        });
-        itemChange["questionsList"] = listAfterRemove;
-        this.setState({specificJobApplication : itemChange});*/
         let listAfterRemove = questionsList.filter(element => {
             return element != removedItem.questionId;
         });

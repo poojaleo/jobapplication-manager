@@ -1,11 +1,11 @@
 import React from "react";
 import {Button, Table, Input} from "reactstrap";
 import "./AllQuestions.css";
-import {Multiselect} from "multiselect-react-dropdown";
 import QuestionNavbar from "../NavBar/QuestionNavbar";
 import AuthService from "../services/AuthService";
 import "../jobapplication/AllJobApplications.css"
 import CreateQuestionModal from "./CreateQuestionModal";
+import UpdateQuestionModal from "./UpdateQuestionModal";
 
 const baseUrl = "https://x9zyk5z39b.execute-api.us-west-2.amazonaws.com/jobtracker";
 
@@ -19,22 +19,22 @@ class AllQuestions extends React.Component {
             questionLoaded: false,
             isCreate: true,
             createModal: false,
+            updateModal: false,
             allQuestions: [],
             selectedTags: [],
             allTags:[{"tag":"technical"}, {"tag": "behavioral"}, {"tag":"coding"}, {"tag":"frontend"}, {"tag":"backend"}, {"tag":"oop"}, {"tag":"ml"}, {"tag":"datascience"}, {"tag":"theory"}, {"tag":"application"}],        
-            specificQuestion: {"username":this.props.username,"questionId":"","question":"",
+            specificQuestion: {"username":"","questionId":"","question":"",
                 "answer":"","needsWork":"true", "tags": []},
-            emptyQuestion: {"username":this.props.username,"questionId":"","question":"",
+            emptyQuestion: {"username":"","questionId":"","question":"",
             "answer":"","needsWork":"true", "tags": []},
         }
 
-        this.viewQuestion = this.viewQuestion.bind(this);
+        this.openUpdateQuestionModal = this.openUpdateQuestionModal.bind(this);
         this.viewQuestionsNeedWork = this.viewQuestionsNeedWork.bind(this);
         this.clickOnCreateQuestion = this.clickOnCreateQuestion.bind(this);
         this.onQuestionCreateOrUpdate = this.onQuestionCreateOrUpdate.bind(this);
         this.handleTagChangeAdd = this.handleTagChangeAdd.bind(this)
         this.handleTagChangeRemove = this.handleTagChangeRemove.bind(this);
-        this.createQuestion = this.createQuestion.bind(this);
     }
 
     async componentDidMount() {
@@ -92,16 +92,18 @@ class AllQuestions extends React.Component {
 
     }
 
-    async viewQuestion(id){
-        const questionResponse = await fetch(`${baseUrl}/users/${this.state.username}/questions/${id}`);
-        const questionBody = await questionResponse.json();
-        this.setState({specificQuestion : questionBody.question, questionLoaded: true, isCreate: false})
-        console.log(questionBody);
+    openUpdateQuestionModal(event, quesId, ques, ans, needWork, tags) {
+        event.preventDefault();
         let itemChange = {...this.state.specificQuestion};
+        itemChange["username"] = AuthService.getCurrentUsername();
+        itemChange["questionId"] = quesId;
+        itemChange["question"] = ques;
+        itemChange["answer"] = ans;
+        itemChange["needsWork"] = needWork;
+        itemChange["tags"] = tags;
         if(itemChange["tags"] == undefined) {
             itemChange["tags"] = new Array();
         }
-
         if(itemChange["needsWork"] == false) {
             itemChange["needsWork"] = "false";
         } else {
@@ -112,36 +114,12 @@ class AllQuestions extends React.Component {
         let newList = fullTagsList.filter(keeptag => {
             return tagsToKeep.includes(keeptag.tag);
         })
-        this.setState({selectedTags : newList});
-        this.setState({specificQuestion : itemChange});
-    }
 
+        console.log(this.state.specificQuestion);
+        console.log(this.state.selectedTags);
 
-    async createQuestion(event) {
-        event.preventDefault();
-        console.log("Creating Question...")
-
-        const questionToCreate = {
-            "question": this.state.specificQuestion.question,
-            "answer": this.state.specificQuestion.answer,
-            "needsWork": this.state.specificQuestion.needsWork,
-            "tags": this.state.specificQuestion.tags
-        }
-
-        const response = await fetch(`${baseUrl}/users/${this.state.username}/questions/`, {
-            method: 'POST',
-            headers : {
-                'Accept' : 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body : JSON.stringify(questionToCreate)
-        });
-        const content = await response.json();
-        window.location.reload(false, {
-            state:{username:this.state.username}
-        }
-        );
-
+        this.setState({selectedTags : newList, specificQuestion :itemChange, questionLoaded: true,
+            isCreate: false, updateModal: true})
     }
 
     async deleteQuestion(id) {
@@ -156,33 +134,7 @@ class AllQuestions extends React.Component {
         window.location.reload();
     }
 
-    async updateQuestion(event) {
-        event.preventDefault();
-        console.log("Updating Question...")
 
-        const questionToUpdate = {
-            "question": this.state.specificQuestion.jobTitle,
-            "answer": this.state.specificQuestion.answer,
-            "needsWork": this.state.specificQuestion.needsWork,
-            "tags": this.state.specificQuestion.tags
-        }
-        console.log(questionToUpdate);
-        const response = await fetch(`${baseUrl}/users/${this.state.username}/questions/${this.state.specificQuestion.questionId}`, {
-            method: 'PUT',
-            headers: {
-                'Accept' : 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body : JSON.stringify(questionToUpdate)
-        });
-
-        const content = await response.json();
-       // console.log(content);
-        window.location.reload(false, {
-            state:{username:this.state.username}
-        });
-
-    }
 
 
 
@@ -190,10 +142,10 @@ class AllQuestions extends React.Component {
         const username = this.state.username;
         const allQuestions = this.state.allQuestions;
 
-        let questionRows = allQuestions.map((question) => {
-            let questionTags = question.tags
+        let questionRows = allQuestions.map((ques) => {
+            let questionTags = ques.tags
                 .map((item, index) => {
-                    if (index === question.tags.length - 1) {
+                    if (index === ques.tags.length - 1) {
                         return `${item}`;
                     } else {
                         return `${item}, `;
@@ -201,61 +153,21 @@ class AllQuestions extends React.Component {
                 })
                 .join("");
             return (
-                <tr className={"questionRows"} key={question.questionId}>
-                <td>{question.question}</td>
-                <td>{question.answer}</td>
-                <td>{question.needsWork.toString()}</td>
+                <tr className={"questionRows"} key={ques.questionId}>
+                <td>{ques.question}</td>
+                <td>{ques.answer}</td>
+                <td>{ques.needsWork.toString()}</td>
                 <td>{questionTags}</td>
-                <td><Button className={"viewButton"} size={"sm"} onClick={() => this.viewQuestion(question.questionId)}>View Question</Button></td>
+                <td><Button className={"viewButton"} size={"sm"} onClick={(event) =>
+                    this.openUpdateQuestionModal(event, ques.questionId, ques.question, ques.answer,
+                        ques.needsWork, ques.tags)}>View Question</Button></td>
                     <td><Button className={"deleteButton"} size={"sm"} color={"danger"}
-                                onClick={() => this.deleteQuestion(question.questionId)}>Delete Question</Button></td>
+                                onClick={() => this.deleteQuestion(ques.questionId)}>Delete Question</Button></td>
                 </tr>
                 
             )    
             
         })
-
-        let specificQuestion = (question) => {
-            if(!this.state.isCreate) {
-                return (
-                    <div className={"questForm"}>
-                        <div className={"questionForm"}>
-                        <text>QuestionId</text>
-                        <input type={"text"} value={question.questionId}/>
-                        <text>Question</text>
-                        <textarea rows={2} columns={50} name={"question"} defaultValue={question.question} required={true}
-                                onChange={this.onQuestionCreateOrUpdate} />
-                        <text>Answer</text>
-                        <textarea rows={4} columns={50} name={"answer"} defaultValue={question.answer} required={false}
-                                onChange={this.onQuestionCreateOrUpdate} />
-                        </div>
-                        
-                        <div className={"questionForm"}>
-                        <text>Tags (select at least one) </text>
-                        <div className={"tags"}>
-                        <Multiselect options={this.state.allTags} showCheckbox={true} displayValue="tag" onSelect={this.handleTagChangeAdd} 
-                            onRemove={this.handleTagChangeRemove} selectedValues={this.state.selectedTags}/>
-                    </div>   
-                        <text>Needs Work</text>
-                        <Input type={"select"} name={"needsWork"} value={question.needsWork} required={true} onChange={this.onQuestionCreateOrUpdate}>
-                            <option value={"false"}>False</option>
-                            <option value={"true"}>True</option>
-                        </Input>
-                        
-                        </div>
-
-                        <div className={"questionCreate"}>
-                        <Button  className={"createButton but"} size={"sm"} onClick={(event) => this.updateQuestion(event)}>Update</Button>
-                        <br />
-                        <Button  className={"createButton but"} size={"sm"}onClick={(event) => this.deleteQuestion(event)}>Delete</Button>
-                        </div>
-
-                    </div>
-                )
-
-            }
-
-        }
 
         return (
             <div className={"interviewPrep"}>
@@ -290,9 +202,11 @@ class AllQuestions extends React.Component {
                     </div>
                 </div>
                 {CreateQuestionModal(this.state.createModal, ()=>this.setState({createModal : false}),
-                this.state.specificQuestion.question, this.state.specificQuestion.answer, "false",
+                this.state.specificQuestion.question, this.state.specificQuestion.answer, "true",
                 this.state.specificQuestion.tags, this.state.allTags)}
-
+                {UpdateQuestionModal(this.state.updateModal, ()=> this.setState({updateModal: false}),
+                this.state.specificQuestion.questionId, this.state.specificQuestion.question, this.state.specificQuestion.answer,
+                this.state.specificQuestion.needsWork, this.state.specificQuestion.tags, this.state.allTags, this.state.selectedTags)}
             </div>
         )
     }
