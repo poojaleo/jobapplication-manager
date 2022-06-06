@@ -16,6 +16,8 @@ JobSmarter is an effective way to manage all your job applications at one place.
 ## API Documentation
 [JobSmarter API Documentation](http://jobtracker-swagger-html.s3-website-us-west-2.amazonaws.com/#get-/users/-username-)
 
+<img src="src/resources/images/jobsmarterapi.png" width="350" >
+
 ## JobSmarter Design Document
 
 ## 1. Problem Statement
@@ -84,13 +86,17 @@ U8. *As a JobSmarter customer, I want to use tags in interview prep*
 3. Employers to post job descriptions in the service
 4. User cannot submit applications through the site
 5. User will not be able to share dashboard with other users for feedback
-6. There is no calendar integration to keep track of reminders
-7. Password Encryption
-8. User will not be able to delete the account
-9. Currently adding tags will not update the job application table
-10. Upload documents such as resume, CV,
+6. Password Encryption
+7. User will not be able to delete the account
+8. Upload documents such as resume, CV,
 
 # 5. Proposed Architecture Overview
+
+Deployed a serverless app using DynamoDB, AWS Lambda & API Gateway with 14 endpoints to handle CRUD requests.
+•	Utilized Lambda Logger to maintain logs and to debug.
+
+![Architecture Overview](src/resources/images/AWSArchitecture.png)
+
 
 We will use API Gateway and Lambda to create 14 endpoints 
 ( `CreateUser`, `GetUser`, `UpdateUser`,  `CreateJobApplication`, `UpdateJobApplication`, `GetJobApp`, 
